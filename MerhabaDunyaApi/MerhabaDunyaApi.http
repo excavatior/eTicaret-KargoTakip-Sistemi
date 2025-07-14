@@ -1,0 +1,6 @@
+@MerhabaDunyaApi_HostAddress = http://localhost:5247
+
+GET {{MerhabaDunyaApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
