@@ -3,22 +3,31 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using MerhabaDunyaApi.Data;
+using MerhabaDunyaApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ★ Add services to the container.
 builder.Services.AddOpenApi();
-builder.Services.AddControllers();    // ← Controller servisini ekliyoruz
+builder.Services.AddControllers();
+
+
+builder.Services.AddDbContext<AppDbContext>(opts =>
+    opts.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")
+    )
+);
 
 var app = builder.Build();
 
-// ★ Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.MapControllers();                 // ← Controller rotalarını burada eşliyoruz
 
@@ -41,7 +50,20 @@ app.MapGet("/weatherforecast", () =>
     return forecast;
 })
 .WithName("GetWeatherForecast");
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
+    if (!db.EmissionFactors.Any())
+    {
+        db.EmissionFactors.AddRange(
+            new EmissionFactor { YakitTipi = "Diesel", KgCO2PerLitre = 0.265M },
+            new EmissionFactor { YakitTipi = "Benzin", KgCO2PerLitre = 0.239M },
+            new EmissionFactor { YakitTipi = "Elektrik", KgCO2PerLitre = 0.000M }
+        );
+        db.SaveChanges();
+    }
+}
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)

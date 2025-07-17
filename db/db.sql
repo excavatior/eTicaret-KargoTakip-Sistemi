@@ -124,3 +124,17 @@ CREATE TABLE dbo.OrderItems (
 );
 ALTER TABLE dbo.EmisyonFaktorleri
 ADD CONSTRAINT UQ_EmisyonFaktorleri_YakitTipi UNIQUE(YakitTipi);
+INSERT INTO dbo.EmisyonFaktorleri (YakitTipi, KgCO2_Per_Litre)
+VALUES
+  ('Diesel', 0.265),
+  ('Benzin', 0.239),
+  ('Elektrik', 0.0);
+
+  USE ECommerceGreen;
+GO
+
+INSERT INTO dbo.EmisyonFaktorleri (YakitTipi, KgCO2_Per_Litre)
+VALUES
+  ('Diesel', 0.265),
+  ('Benzin', 0.239),
+  ('Elektrik', 0.000);
