@@ -1,59 +1,70 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using MerhabaDunyaApi.Data;
 using MerhabaDunyaApi.Models;
+using MerhabaDunyaApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// 1) Swagger/OpenAPI ve Controller altyapısı
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 
-
+// 2) EF Core: SQL Server bağlantısı
 builder.Services.AddDbContext<AppDbContext>(opts =>
-    opts.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")
-    )
+    opts.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
+
+// 3) Routing Motoru için HttpClient (OSRM örneği)
+builder.Services.AddHttpClient("routing", c =>
+{
+    c.BaseAddress = new Uri("https://router.project-osrm.org/");
+});
+
+// 4) Emisyon Hesaplayıcı servisi (DI)
+builder.Services.AddScoped<IEmissionCalculator, EmissionCalculator>();
 
 var app = builder.Build();
 
-
+// 5) Geliştirme ortamında Swagger UI
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
-//app.UseHttpsRedirection();
+// Statik dosya servisi (wwwroot) ve default dosya bulunması:
+app.UseDefaultFiles();   // ← burada index.html, default.html vs. aranır
 
-app.MapControllers();                 // ← Controller rotalarını burada eşliyoruz
+// 6) HTTP→HTTPS yönlendirmeyi kapatıyoruz (yalnızca HTTP kullanımı)
+// app.UseHttpsRedirection();
+app.UseStaticFiles();
+// 7) Controller rotalarını eşliyoruz
+app.MapControllers();
 
+// 8) Demo amaçlı WeatherForecast endpoint’i
 var summaries = new[]
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild",
-    "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+    "Freezing","Bracing","Chilly","Cool","Mild",
+    "Warm","Balmy","Hot","Sweltering","Scorching"
 };
-
 app.MapGet("/weatherforecast", () =>
 {
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+    return Enumerable.Range(1, 5).Select(i =>
+        new WeatherForecast(
+            DateOnly.FromDateTime(DateTime.Now.AddDays(i)),
             Random.Shared.Next(-20, 55),
             summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
+        )
+    ).ToArray();
 })
 .WithName("GetWeatherForecast");
+
+// 9) Uygulama başında Emisyon Faktörlerini seed et
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
     if (!db.EmissionFactors.Any())
     {
         db.EmissionFactors.AddRange(
@@ -64,8 +75,10 @@ using (var scope = app.Services.CreateScope())
         db.SaveChanges();
     }
 }
+
 app.Run();
 
+// Küçük bir record tipi demo amaçlı
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);

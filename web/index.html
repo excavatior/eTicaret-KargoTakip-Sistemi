@@ -1,11 +1,47 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <title>E-Ticaret & Kargo Takip</title>
+    <meta charset="UTF-8">
+    <title>E-Ticaret & Kargo Takip</title>
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+          crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha512-zlfW+PvY9+8+qUP0bLrlHf7ecSJvxLeZ8oGg1Yo4rJdGzD+G3Eyelkh6oVqVMZYfKH80P4oYxLePeyNfiQm2xg=="
+            crossorigin=""></script>
 </head>
 <body>
-  <h1>Merhaba, E-Ticaret & Kargo Takip Sistemine Hoş Geldiniz!</h1>
-  <p>Bu, projenin başlangıç sayfasıdır.</p>
+    <h1>Merhaba, E-Ticaret & Kargo Takip Sistemine Hoş Geldiniz!</h1>
+    <p>Bu, projenin başlangıç sayfasıdır.</p>
+    <div id="map" style="height: 400px;"></div>
+    <script>
+        const map = L.map('map').setView([41.015137, 28.979530], 12);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19
+        }).addTo(map);
+    </script>
+    <script>
+        async function drawRoute() {
+            const resp = await fetch('/api/route/optimize', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    Waypoints: [[41.01, 29.02], [41.02, 29.06]],
+                    Mode: 'green',
+                    FuelType: 'Diesel'
+                })
+            });
+            const data = await resp.json();
+            data.segments.forEach(seg => {
+                // Renk skalası: 0–maxEmission arası renk interpolasyonu
+                const color = seg.distanceKm * 0.265 > 1 ? 'red' : 'green';
+                L.polyline([ /* gerçek koordinatları segment’den çıkarın */], { color })
+                    .addTo(map);
+            });
+            map.fitBounds(L.featureGroup(map._layers).getBounds());
+        }
+        drawRoute();
+    </script>
 </body>
 </html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Sipariş Detayı</title>
+</head>
+<body>
+    <h2>Sipariş Detayı</h2>
+    <!-- diğer sipariş bilgileri -->
+    <p>Karbon Ayak İzi: <span id="co2-value">Yükleniyor...</span> kg CO₂</p>
+    <!-- Carbon Offset Butonu -->
+    <button id="offset-btn">Karbonu Dengele</button>
+
+    <!-- Modal / Açılır Panel -->
+    <div id="offset-modal" style="display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%); background:#fff; padding:1rem; box-shadow:0 2px 8px rgba(0,0,0,.3);">
+        <h3>Karbon Offset</h3>
+        <label for="offset-count">Ağaç Adeti:</label>
+        <input type="number" id="offset-count" value="1" min="1" />
+        <p id="offset-cost">Maliyet: — TL</p>
+        <button id="offset-purchase">Satın Al</button>
+        <button id="offset-close">Kapat</button>
+    </div>
+
+    <script>
+        async function showCO2(orderId) {
+            const resp = await fetch('/api/emission/calculate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ YakitTipi: 'Diesel', Mesafe: 150 })
+            });
+            const { emisyon } = await resp.json();
+            document.getElementById('co2-value').textContent = emisyon.toFixed(2);
+        }
+        // orderId parametresini gerçek sipariş kimliği ile değiştirin
+        showCO2(1);
+    </script>
+</body>
+<script>
+    // Buton tıklanınca modalı göster
+    document.getElementById('offset-btn').addEventListener('click', () => {
+        document.getElementById('offset-modal').style.display = 'block';
+    });
+
+    // Ağaç adetini değiştirdikçe maliyeti güncelle
+    document.getElementById('offset-count').addEventListener('input', async (e) => {
+        const adet = e.target.value;
+        // Örnek TreePlant API çağrısı
+        const resp = await fetch(`https://api.treeplant.io/cost?trees=${adet}`);
+        const { totalCost } = await resp.json();
+        document.getElementById('offset-cost').textContent = `Maliyet: ${totalCost} TL`;
+    });
+
+    // Satın alma düğmesi
+    document.getElementById('offset-purchase').addEventListener('click', () => {
+        const adet = document.getElementById('offset-count').value;
+        window.open(`https://treeplant.io/buy?trees=${adet}`, '_blank');
+    });
+
+    // Kapat düğmesi
+    document.getElementById('offset-close').addEventListener('click', () => {
+        document.getElementById('offset-modal').style.display = 'none';
+    });
+</script>
+</html>

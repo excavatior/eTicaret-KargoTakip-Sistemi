@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MerhabaDunyaApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c03ce58e01c0e81d1aaece03fe32112453205258")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f20f88004aaa382141df9e1a2143215eb08700b3")]
 [assembly: System.Reflection.AssemblyProductAttribute("MerhabaDunyaApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MerhabaDunyaApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
