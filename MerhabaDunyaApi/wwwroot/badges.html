@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Rozetlerim</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .badge-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .badge {
+            text-align: center;
+        }
+
+            .badge img {
+                width: 64px;
+                height: 64px;
+            }
+
+            .badge p {
+                margin-top: 0.5rem;
+                color: #333;
+            }
+    </style>
+</head>
+<body>
+    <h2>Rozetlerim</h2>
+    <p>Tarayıcı önbelleğini temizleyip tekrar deneyin veya sayfayı yenileyin.</p>
+    <div class="badge-container" id="badge-container"></div>
+
+    <script>
+        async function loadBadges() {
+            try {
+                // Örnek tek badge: "Green Shipper"
+                const container = document.getElementById('badge-container');
+                const div = document.createElement('div');
+                div.className = 'badge';
+                div.innerHTML = `
+              <img src="/images/green_shipper.png" alt="Green Shipper Rozeti" />
+              <p>Green Shipper</p>
+            `;
+                container.append(div);
+
+                // Eğer API’den dinamik çekmek isterseniz:
+                // const resp = await fetch('/api/rozet');
+                // const data = await resp.json();
+                // data.forEach(item => { /* aynısını burada döngüyle ekleyin */ });
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        loadBadges();
+    </script>
+</body>
+</html>

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using MerhabaDunyaApi.Data;
 using MerhabaDunyaApi.Models;
 using MerhabaDunyaApi.Services;
+using MerhabaDunyaApi.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +26,9 @@ builder.Services.AddHttpClient("routing", c =>
 
 // 4) Emisyon Hesaplayıcı servisi (DI)
 builder.Services.AddScoped<IEmissionCalculator, EmissionCalculator>();
-
+builder.Services.AddScoped<IBadgeService, BadgeService>();
+builder.Services.AddSignalR();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 var app = builder.Build();
 
 // 5) Geliştirme ortamında Swagger UI
@@ -42,7 +45,7 @@ app.UseDefaultFiles();   // ← burada index.html, default.html vs. aranır
 app.UseStaticFiles();
 // 7) Controller rotalarını eşliyoruz
 app.MapControllers();
-
+app.MapHub<NotificationHub>("/notificationHub");
 // 8) Demo amaçlı WeatherForecast endpoint’i
 var summaries = new[]
 {

@@ -225,3 +225,31 @@ GO
 INSERT INTO dbo.RotaBolumleri (RotaKimlik,BaslangicKonum,BitisKonum,Mesafe)
 VALUES (1,1,2,25.00),(1,2,3,25.00);
 GO
+
+-- 14 Rozetler Tablosu
+CREATE TABLE dbo.Rozetler (
+    Id                 INT           IDENTITY(1,1) PRIMARY KEY,
+    Ad                 NVARCHAR(100) NOT NULL,
+    Aciklama           NVARCHAR(255) NOT NULL,
+    IconUrl            NVARCHAR(255) NULL,
+    RequiredSavePct    DECIMAL(5,2)  NOT NULL  -- Örn: 10.00 = %10
+);
+
+-- 15 KullanýcýRozetleri (Many-to-Many)
+CREATE TABLE dbo.KullaniciRozetleri (
+    KullaniciKimlik    INT           NOT NULL,
+    RozetId            INT           NOT NULL,
+    VerilisTarihi      DATETIME2     NOT NULL DEFAULT SYSUTCDATETIME(),
+    PRIMARY KEY (KullaniciKimlik, RozetId),
+    CONSTRAINT FK_KR_Kullanicilar FOREIGN KEY (KullaniciKimlik) REFERENCES dbo.Kullanicilar(Kimlik),
+    CONSTRAINT FK_KR_Rozetler      FOREIGN KEY (RozetId)       REFERENCES dbo.Rozetler(Id)
+);
+
+INSERT INTO dbo.Rozetler (Ad, Aciklama, IconUrl, RequiredSavePct)
+VALUES 
+(
+  'Green Shipper',
+  'Bu rozet %10 veya daha fazla emisyon tasarrufu yapanlara verilir',
+  '/images/green_shipper.png',
+  10.00
+);

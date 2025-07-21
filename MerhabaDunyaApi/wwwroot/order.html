@@ -88,5 +88,20 @@
             offsetCost.textContent = `Maliyet: ${totalCost} TL`;
         }
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/notificationHub")
+            .build();
+
+        connection.on("ReceiveNotification", data => {
+            alert(`${data.title}\n${data.message}`);
+        });
+
+        connection.start().then(() => {
+            // Kullanıcı ID’si dinamik eklenmeli
+            connection.invoke("Subscribe", 1);
+        });
+    </script>
 </body>
 </html>

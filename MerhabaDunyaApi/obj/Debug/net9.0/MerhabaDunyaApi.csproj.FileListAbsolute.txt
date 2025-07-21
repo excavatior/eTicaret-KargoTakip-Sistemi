@@ -164,5 +164,6 @@ C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\bin\Debug\net9.
 C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\bin\Debug\net9.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\bin\Debug\net9.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\bin\Debug\net9.0\MerhabaDunyaApi.staticwebassets.runtime.json
-C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\compressed\srmtho5y49-dnz8zlk5o9.gz
-C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\compressed\eqiibbqplt-falsrr8iy2.gz
+C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\compressed\u9xnav3m18-y134yae9o0.gz
+C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\compressed\eqiibbqplt-74h2yppz4a.gz
+C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\compressed\srmtho5y49-876i1xxl2q.gz
