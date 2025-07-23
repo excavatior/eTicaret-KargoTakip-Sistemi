@@ -1,23 +1,39 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <title>Merhaba - E-Ticaret & Kargo</title>
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #f5f5f5; margin: 0; padding: 0; }
-        .container { max-width: 800px; margin: 50px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        h1 { color: #333; }
-        p { color: #555; line-height: 1.5; }
-        .btn { display: inline-block; margin-top: 20px; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 4px; transition: background 0.3s; }
-        .btn:hover { background: #0056b3; }
-    </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anasayfa</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-leaf"></i> EcoShip
+            </a>
+            <div class="nav-links">
+                <a href="index.html"><i class="fas fa-home"></i> Anasayfa</a>
+                <a href="order.html"><i class="fas fa-truck"></i> Siparişler</a>
+                <a href="badges.html"><i class="fas fa-medal"></i> Rozetlerim</a>
+            </div>
+        </div>
+    </nav>
+
     <div class="container">
-        <h1>Merhaba, E-Ticaret & Kargo Takip Sistemine Hoş Geldiniz!</h1>
-        <p>Bu, projenin başlangıç sayfasıdır.</p>
-        <a href="order.html" class="btn">Sipariş Detayı</a>
-        <a href="badges.html" class="btn">Rozetlerim</a>  <!-- ← Yeni eklenen buton -->
+        <div class="card">
+            <h1><i class="fas fa-shipping-fast"></i> Merhaba, EcoShip'e Hoş Geldiniz!</h1>
+            <p>Sürdürülebilir lojistik çözümleriyle çevre dostu kargo deneyimi.</p>
+            <div class="btn-group">
+                <a href="order.html" class="btn">
+                    <i class="fas fa-search"></i> Sipariş Detayı
+                </a>
+                <a href="badges.html" class="btn">
+                    <i class="fas fa-award"></i> Rozetlerim
+                </a>
+            </div>
+        </div>
     </div>
 </body>
 </html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Giriş Yap</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="auth-container">
+        <h2>Giriş Yap</h2>
+        <div id="error-message" class="error"></div>
+        <form onsubmit="event.preventDefault(); login();">
+            <input type="email" id="email" placeholder="E-posta" required>
+            <input type="password" id="password" placeholder="Şifre" required>
+            <button type="submit">Giriş Yap</button>
+        </form>
+        <p>Hesabınız yok mu? <a href="/register.html">Kayıt olun</a></p>
+    </div>
+    <script src="/js/auth.js"></script>
+</body>
+</html>

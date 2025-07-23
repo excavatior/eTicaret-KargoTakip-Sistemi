@@ -253,3 +253,22 @@ VALUES
   '/images/green_shipper.png',
   10.00
 );
+
+ALTER TABLE dbo.Kullanicilar
+ADD 
+    SifreSalt NVARCHAR(128) NOT NULL DEFAULT '',
+    SonGirisTarihi DATETIME2 NULL,
+    Aktif BIT NOT NULL DEFAULT 1;
+GO
+
+-- Token yönetimi için tablo
+CREATE TABLE dbo.KullaniciTokenlari (
+    Kimlik INT IDENTITY(1,1) PRIMARY KEY,
+    KullaniciKimlik INT NOT NULL,
+    Token NVARCHAR(MAX) NOT NULL,
+    OlusturulmaTarihi DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
+    SonKullanmaTarihi DATETIME2 NOT NULL,
+    CONSTRAINT FK_KullaniciTokenlari_Kullanicilar 
+        FOREIGN KEY (KullaniciKimlik) REFERENCES dbo.Kullanicilar(Kimlik)
+);
+GO

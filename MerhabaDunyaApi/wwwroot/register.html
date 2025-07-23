@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Kayıt Ol</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="auth-container">
+        <h2>Kayıt Ol</h2>
+        <div id="error-message" class="error"></div>
+        <form onsubmit="event.preventDefault(); register();">
+            <input type="text" id="name" placeholder="Ad Soyad" required>
+            <input type="email" id="email" placeholder="E-posta" required>
+            <input type="password" id="password" placeholder="Şifre" required>
+            <button type="submit">Kayıt Ol</button>
+        </form>
+        <p>Zaten hesabınız var mı? <a href="/login.html">Giriş yapın</a></p>
+    </div>
+    <script src="/js/auth.js"></script>
+</body>
+</html>

@@ -8,11 +8,13 @@ namespace MerhabaDunyaApi.Models
     {
         [Key]                                   // ← Kimlik’i PK yapıyoruz
         public int Kimlik { get; set; }
-        public string AdSoyad { get; set; } = null!;
-        public string EPosta { get; set; } = null!;
-        public string SifreHash { get; set; } = null!;
-        public DateTime OlusturmaTarihi { get; set; }
-
-        public ICollection<Siparis> Siparisler { get; set; } = new List<Siparis>();
+            public string AdSoyad { get; set; }
+            public string EPosta { get; set; }
+            public string SifreHash { get; set; }
+            public string SifreSalt { get; set; }
+            public DateTime OlusturmaTarihi { get; set; }
+            public DateTime? SonGirisTarihi { get; set; }
+            public bool Aktif { get; set; }
+        }
     }
-}
+

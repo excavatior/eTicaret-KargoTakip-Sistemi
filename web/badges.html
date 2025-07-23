@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rozetlerim</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-leaf"></i> EcoShip
+            </a>
+            <div class="nav-links">
+                <a href="index.html"><i class="fas fa-home"></i> Anasayfa</a>
+                <a href="order.html"><i class="fas fa-truck"></i> Siparişler</a>
+                <a href="badges.html"><i class="fas fa-medal"></i> Rozetlerim</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <h2><i class="fas fa-trophy"></i> Rozetlerim</h2>
+            <p>Çevre dostu alışverişlerinizle kazandığınız rozetler:</p>
+
+            <div class="badge-container" id="badge-container">
+                <div class="spinner" id="badge-loading"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function loadBadges() {
+            const container = document.getElementById('badge-container');
+            const loadingElement = document.getElementById('badge-loading');
+
+            try {
+                loadingElement.style.display = 'block';
+                container.innerHTML = '';
+
+                // Simüle edilmiş bekleme
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // Örnek rozetler - gerçek uygulamada API'den çekilecek
+                const sampleBadges = [
+                    {
+                        name: "Green Shipper",
+                        image: "/images/green_shipper.png",
+                        description: "5 çevre dostu gönderi tamamladınız"
+                    },
+                    {
+                        name: "Eco Warrior",
+                        image: "/images/eco_warrior.png",
+                        description: "10 kg karbon offset yaptınız"
+                    },
+                    {
+                        name: "Carbon Neutral",
+                        image: "/images/carbon_neutral.png",
+                        description: "Karbon nötr gönderi yaptınız"
+                    },
+                    {
+                        name: "İlk Sipariş",
+                        image: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAAF+mlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNy4xLWMwMDAgNzkuZGFiYWNiYiwgMjAyMS8wNC8xNC0wMDozOTo0NCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDIyLjUgKE1hY2ludG9zaCkiIHhtcDpDcmVhdG9yRGF0ZT0iMjAyMy0xMC0xMlQxNDozMjo0NiswMzowMCIgeG1wOk1vZGlmeURhdGU9IjIwMjMtMTAtMTJUMTQ6MzQ6MDgrMDM6MDAiIHhtcDpNZXRhZGF0YURhdGU9IjIwMjMtMTAtMTJUMTQ6MzQ6MDgrMDM6MDAiIGRjOmZvcm1hdD0iaW1hZ2UvcG5nIiBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOmY3YjM0YzFhLTY1YzEtNDY0Yi1hYjY0LTY3NjY5YzVmZGM1ZCIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpmN2IzNGMxYS02NWMxLTQ2NGItYWI2NC02NzY2OWM1ZmRjNWQiIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpmN2IzNGMxYS02NWMxLTQ2NGItYWI2NC02NzY2OWM1ZmRjNWQiPiA8eG1wTU06SGlzdG9yeT4gPHJkZjpTZXE+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJjcmVhdGVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOmY3YjM0YzFhLTY1YzEtNDY0Yi1hYjY0LTY3NjY5YzVmZGM1ZCIgc3RFdnQ6d2hlbj0iMjAyMy0xMC0xMlQxNDozMjo0NiswMzowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIDIyLjUgKE1hY2ludG9zaCkiLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+EMdH8gAAAkZJREFUeJztmz1PwzAUx/+XpmmXjQ0xMDAgJAYkFjY+Ah+BgQ/AB2BgYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWBhYGFgYWD5BwzXe2XpQz3xAAAAAElFTkSuQmCC",
+                        description: "İlk çevre dostu siparişiniz"
+                    }
+                ];
+
+                sampleBadges.forEach(badge => {
+                    const div = document.createElement('div');
+                    div.className = 'badge';
+                    div.innerHTML = `
+                            <img src="${badge.image}" alt="${badge.name} Rozeti" />
+                            <p>${badge.name}</p>
+                            <small>${badge.description}</small>
+                        `;
+                    container.append(div);
+                });
+
+            } catch (e) {
+                console.error('Rozetler yüklenirken hata:', e);
+                container.innerHTML = '<p>Rozetler yüklenirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.</p>';
+            } finally {
+                loadingElement.style.display = 'none';
+            }
+        }
+        loadBadges();
+    </script>
+</body>
+</html>

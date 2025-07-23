@@ -6,47 +6,71 @@ using MerhabaDunyaApi.Data;
 using MerhabaDunyaApi.Models;
 using MerhabaDunyaApi.Services;
 using MerhabaDunyaApi.Hubs;
-
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // 1) Swagger/OpenAPI ve Controller altyapısı
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
-
-// 2) EF Core: SQL Server bağlantısı
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
+// EF Core: SQL Server bağlantısı
 builder.Services.AddDbContext<AppDbContext>(opts =>
     opts.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
-// 3) Routing Motoru için HttpClient (OSRM örneği)
+// Routing Motoru için HttpClient (OSRM örneği)
 builder.Services.AddHttpClient("routing", c =>
 {
     c.BaseAddress = new Uri("https://router.project-osrm.org/");
 });
 
-// 4) Emisyon Hesaplayıcı servisi (DI)
+// Emisyon Hesaplayıcı servisi (DI)
 builder.Services.AddScoped<IEmissionCalculator, EmissionCalculator>();
 builder.Services.AddScoped<IBadgeService, BadgeService>();
 builder.Services.AddSignalR();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+
 var app = builder.Build();
 
-// 5) Geliştirme ortamında Swagger UI
+// Geliştirme ortamında Swagger UI
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
+
+// Auth servisini ekleyin
+
+
 // Statik dosya servisi (wwwroot) ve default dosya bulunması:
 app.UseDefaultFiles();   // ← burada index.html, default.html vs. aranır
 
-// 6) HTTP→HTTPS yönlendirmeyi kapatıyoruz (yalnızca HTTP kullanımı)
+// HTTP→HTTPS yönlendirmeyi kapatıyoruz (yalnızca HTTP kullanımı)
 // app.UseHttpsRedirection();
 app.UseStaticFiles();
-// 7) Controller rotalarını eşliyoruz
+app.UseRouting();
+// Controller rotalarını eşliyoruz
 app.MapControllers();
+app.UseAuthentication();
+app.UseAuthorization();
+// NotificationHub'ı eşliyoruz
 app.MapHub<NotificationHub>("/notificationHub");
-// 8) Demo amaçlı WeatherForecast endpoint’i
+// Demo amaçlı WeatherForecast endpoint’i
 var summaries = new[]
 {
     "Freezing","Bracing","Chilly","Cool","Mild",

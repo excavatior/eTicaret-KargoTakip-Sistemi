@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;  // ← Ekledik
+﻿using System.ComponentModel.DataAnnotations;  // Birincil anahtar yapmamız için bunu kullanıyoruz
 
 namespace MerhabaDunyaApi.Models
 {

@@ -1,47 +1,39 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <title>E-Ticaret & Kargo Takip</title>
-    <link rel="stylesheet"
-          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-          crossorigin="" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-            integrity="sha512-zlfW+PvY9+8+qUP0bLrlHf7ecSJvxLeZ8oGg1Yo4rJdGzD+G3Eyelkh6oVqVMZYfKH80P4oYxLePeyNfiQm2xg=="
-            crossorigin=""></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anasayfa</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1>Merhaba, E-Ticaret & Kargo Takip Sistemine Hoş Geldiniz!</h1>
-    <p>Bu, projenin başlangıç sayfasıdır.</p>
-    <div id="map" style="height: 400px;"></div>
-    <script>
-        const map = L.map('map').setView([41.015137, 28.979530], 12);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19
-        }).addTo(map);
-    </script>
-    <script>
-        async function drawRoute() {
-            const resp = await fetch('/api/route/optimize', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    Waypoints: [[41.01, 29.02], [41.02, 29.06]],
-                    Mode: 'green',
-                    FuelType: 'Diesel'
-                })
-            });
-            const data = await resp.json();
-            data.segments.forEach(seg => {
-                // Renk skalası: 0–maxEmission arası renk interpolasyonu
-                const color = seg.distanceKm * 0.265 > 1 ? 'red' : 'green';
-                L.polyline([ /* gerçek koordinatları segment’den çıkarın */], { color })
-                    .addTo(map);
-            });
-            map.fitBounds(L.featureGroup(map._layers).getBounds());
-        }
-        drawRoute();
-    </script>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-leaf"></i> EcoShip
+            </a>
+            <div class="nav-links">
+                <a href="index.html"><i class="fas fa-home"></i> Anasayfa</a>
+                <a href="order.html"><i class="fas fa-truck"></i> Siparişler</a>
+                <a href="badges.html"><i class="fas fa-medal"></i> Rozetlerim</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <h1><i class="fas fa-shipping-fast"></i> Merhaba, EcoShip'e Hoş Geldiniz!</h1>
+            <p>Sürdürülebilir lojistik çözümleriyle çevre dostu kargo deneyimi.</p>
+            <div class="btn-group">
+                <a href="order.html" class="btn">
+                    <i class="fas fa-search"></i> Sipariş Detayı
+                </a>
+                <a href="badges.html" class="btn">
+                    <i class="fas fa-award"></i> Rozetlerim
+                </a>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

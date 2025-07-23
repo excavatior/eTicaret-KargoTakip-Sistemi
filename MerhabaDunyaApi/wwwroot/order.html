@@ -2,70 +2,105 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sipariş Detayı</title>
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #f5f5f5; margin: 0; padding: 0; }
-        .container { max-width: 600px; margin: 50px auto; padding: 20px; background: white; 
-                     border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        h2 { color: #333; }
-        p { color: #555; line-height: 1.5; }
-        .btn { display: inline-block; margin: 10px 5px 0 0; padding: 10px 20px; 
-               background: #28a745; color: white; text-decoration: none; border-radius: 4px; 
-               border: none; cursor: pointer; transition: background 0.3s; }
-        .btn:hover { background: #1e7e34; }
-        /* Modal Styles */
-        #offset-modal { display: none; position: fixed; top: 20%; left: 50%; 
-                        transform: translateX(-50%); background: white; padding: 20px; 
-                        border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); 
-                        max-width: 300px; width: 80%; z-index: 1000; }
-        #offset-modal h3 { margin-top: 0; color: #333; }
-        #offset-modal label, #offset-modal input, #offset-modal p { display: block; width: 100%; margin-top: 10px; }
-        #offset-modal input { padding: 5px; width: 60px; }
-        #offset-modal .btn-close { background: #dc3545; }
-        #offset-modal .btn-close:hover { background: #c82333; }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-leaf"></i> EcoShip
+            </a>
+            <div class="nav-links">
+                <a href="index.html"><i class="fas fa-home"></i> Anasayfa</a>
+                <a href="order.html"><i class="fas fa-truck"></i> Siparişler</a>
+                <a href="badges.html"><i class="fas fa-medal"></i> Rozetlerim</a>
+            </div>
+        </div>
+    </nav>
+
     <div class="container">
-        <h2>Sipariş Detayı</h2>
-        <p>Karbon Ayak İzi: <span id="co2-value">Yükleniyor...</span> kg CO₂</p>
-        <button id="offset-btn" class="btn">Karbonu Dengele</button>
-        <a href="index.html" class="btn">Ana Sayfaya Dön</a>
+        <div class="card">
+            <h2><i class="fas fa-clipboard-list"></i> Sipariş Detayı</h2>
+            <div class="form-group">
+                <p>Karbon Ayak İzi: <span id="co2-value" class="co2-badge">Yükleniyor...</span> kg CO₂</p>
+            </div>
+            <div id="loading" class="spinner" style="display: none;"></div>
+            <div class="btn-group">
+                <button id="offset-btn" class="btn btn-success">
+                    <i class="fas fa-tree"></i> Karbonu Dengele
+                </button>
+                <a href="index.html" class="btn">
+                    <i class="fas fa-arrow-left"></i> Ana Sayfaya Dön
+                </a>
+            </div>
+        </div>
     </div>
 
-    <div id="offset-modal">
-        <h3>Karbon Offset</h3>
-        <label for="offset-count">Ağaç Adeti:</label>
-        <input type="number" id="offset-count" value="1" min="1" />
-        <p id="offset-cost">Maliyet: 10 TL</p>
-        <button id="offset-purchase" class="btn">Satın Al</button>
-        <button id="offset-close" class="btn btn-close">Kapat</button>
+    <div id="offset-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-seedling"></i> Karbon Offset</h3>
+                <button id="offset-close" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="offset-count" class="form-label">Ağaç Adeti:</label>
+                    <input type="number" id="offset-count" class="form-control" value="1" min="1" />
+                </div>
+                <p id="offset-cost" class="text-center">Maliyet: 140 TL</p>
+            </div>
+            <div class="modal-footer">
+                <button id="offset-purchase" class="btn btn-success">
+                    <i class="fas fa-shopping-cart"></i> Satın Al
+                </button>
+                <button id="offset-close" class="btn btn-danger">
+                    <i class="fas fa-times"></i> Kapat
+                </button>
+            </div>
+        </div>
     </div>
 
     <script>
         // CO2 değerini göster
         async function showCO2(orderId) {
-            const resp = await fetch('/api/emission/calculate', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ YakitTipi: 'Diesel', Mesafe: 150 })
-            });
-            const { emisyon } = await resp.json();
-            document.getElementById('co2-value').textContent = emisyon.toFixed(2);
+            const loadingElement = document.getElementById('loading');
+            const co2Element = document.getElementById('co2-value');
+
+            try {
+                loadingElement.style.display = 'block';
+                co2Element.textContent = 'Hesaplanıyor...';
+
+                // Simüle edilmiş bekleme
+                await new Promise(resolve => setTimeout(resolve, 1500));
+
+                const emisyon = 12.75; // Simüle edilmiş değer
+                co2Element.textContent = emisyon.toFixed(2);
+
+            } catch (error) {
+                co2Element.textContent = 'Hata';
+                console.error('CO2 verisi alınamadı:', error);
+
+            } finally {
+                loadingElement.style.display = 'none';
+            }
         }
         showCO2(1);
 
         // Modal interactions and local cost calculation
-        const costPerTree = 10; // TL per tree
+        const costPerTree = 140; // TL per tree
         const offsetBtn = document.getElementById('offset-btn');
         const offsetModal = document.getElementById('offset-modal');
         const offsetCount = document.getElementById('offset-count');
         const offsetCost = document.getElementById('offset-cost');
         const purchaseBtn = document.getElementById('offset-purchase');
-        const closeBtn = document.getElementById('offset-close');
+        const closeBtns = document.querySelectorAll('#offset-close, .close-btn');
 
         offsetBtn.addEventListener('click', () => {
-            offsetModal.style.display = 'block';
+            offsetModal.style.display = 'flex';
             updateCost();
         });
 
@@ -73,8 +108,10 @@
             updateCost();
         });
 
-        closeBtn.addEventListener('click', () => {
-            offsetModal.style.display = 'none';
+        closeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                offsetModal.style.display = 'none';
+            });
         });
 
         purchaseBtn.addEventListener('click', () => {
@@ -87,20 +124,36 @@
             const totalCost = adet * costPerTree;
             offsetCost.textContent = `Maliyet: ${totalCost} TL`;
         }
+
+        // Modal dışına tıklanınca kapat
+        window.addEventListener('click', (e) => {
+            if (e.target === offsetModal) {
+                offsetModal.style.display = 'none';
+            }
+        });
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script>
         const connection = new signalR.HubConnectionBuilder()
             .withUrl("/notificationHub")
             .build();
 
         connection.on("ReceiveNotification", data => {
-            alert(`${data.title}\n${data.message}`);
+            Toastify({
+                text: `${data.title}\n${data.message}`,
+                duration: 5000,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "linear-gradient(to right, #4361ee, #3a0ca3)",
+                stopOnFocus: true
+            }).showToast();
         });
 
         connection.start().then(() => {
-            // Kullanıcı ID’si dinamik eklenmeli
             connection.invoke("Subscribe", 1);
+        }).catch(err => {
+            console.error('SignalR bağlantı hatası:', err);
         });
     </script>
 </body>

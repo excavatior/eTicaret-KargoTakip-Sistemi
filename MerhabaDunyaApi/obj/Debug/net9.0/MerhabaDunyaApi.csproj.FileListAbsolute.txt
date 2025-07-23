@@ -164,6 +164,11 @@ C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\bin\Debug\net9.
 C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\bin\Debug\net9.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\bin\Debug\net9.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\bin\Debug\net9.0\MerhabaDunyaApi.staticwebassets.runtime.json
-C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\compressed\u9xnav3m18-y134yae9o0.gz
-C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\compressed\eqiibbqplt-74h2yppz4a.gz
-C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\compressed\srmtho5y49-876i1xxl2q.gz
+C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\compressed\srmtho5y49-r21p68dfds.gz
+C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\compressed\eqiibbqplt-omtd4vhrgr.gz
+C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\compressed\3t5f88l1ps-4rohx1kl1p.gz
+C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\compressed\ww0sw2fx9l-0aex8awb1o.gz
+C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\compressed\pc4c041abv-kv27j8pon5.gz
+C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\compressed\vz7xqrqwzp-ze62d7tl4f.gz
+C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\compressed\u9xnav3m18-b8n1rrztme.gz
