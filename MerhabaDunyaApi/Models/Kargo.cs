@@ -1,15 +1,18 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;  // ← bu eklenmeli
-using MerhabaDunyaApi.Models;  // eğer başka modelleri kullandığınız başka using’ler varsa
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MerhabaDunyaApi.Models
 {
     public class Kargo
     {
-        [Key]                                     // ← Kimlik’i PK olarak işaretliyoruz
-        public int Kimlik { get; set; }
-        public int SiparisKimlik { get; set; }
+        [Key]
+        public int Kimlik { get; set; }           // PK
+
+        [ForeignKey(nameof(Siparis))]
+        public int SiparisKimlik { get; set; }    // FK → Siparis.Kimlik
         public Siparis Siparis { get; set; } = null!;
+
         public string TakipNumarasi { get; set; } = null!;
         public DateTime? GonderimTarihi { get; set; }
         public string? Durum { get; set; }

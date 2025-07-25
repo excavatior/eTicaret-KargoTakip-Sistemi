@@ -1,4 +1,5 @@
 :root {
+    /* Color Variables */
     --primary-color: #4361ee;
     --secondary-color: #3f37c9;
     --accent-color: #4cc9f0;
@@ -9,10 +10,12 @@
     --dark-color: #212529;
     --gray-color: #6c757d;
     --white: #ffffff;
+    /* Effect Variables */
     --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     --transition: all 0.3s ease;
 }
 
+/* Base Styles */
 * {
     margin: 0;
     padding: 0;
@@ -20,18 +23,13 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
     background-color: #f5f7fa;
     color: var(--dark-color);
     line-height: 1.6;
 }
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-}
-
+/* Typography */
 h1, h2, h3, h4 {
     margin-bottom: 1rem;
     color: var(--dark-color);
@@ -51,44 +49,14 @@ p {
     color: var(--gray-color);
 }
 
-.btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    background-color: var(--primary-color);
-    color: var(--white);
-    text-decoration: none;
-    border-radius: 0.5rem;
-    border: none;
-    cursor: pointer;
-    transition: var(--transition);
-    font-weight: 500;
-    text-align: center;
-    box-shadow: var(--card-shadow);
+/* Layout Components */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
 }
 
-    .btn:hover {
-        background-color: var(--secondary-color);
-        transform: translateY(-2px);
-    }
-
-.btn-success {
-    background-color: var(--success-color);
-}
-
-    .btn-success:hover {
-        background-color: #3aac59;
-    }
-
-.btn-danger {
-    background-color: var(--danger-color);
-}
-
-    .btn-danger:hover {
-        background-color: #d3166b;
-    }
-
+/* Card Component */
 .card {
     background: var(--white);
     border-radius: 0.5rem;
@@ -103,6 +71,7 @@ p {
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     }
 
+/* Navigation */
 .navbar {
     background-color: var(--white);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -114,10 +83,11 @@ p {
 
 .navbar-container {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     max-width: 1200px;
     margin: 0 auto;
+    padding: 0 20px;
 }
 
 .logo {
@@ -133,6 +103,7 @@ p {
 .nav-links {
     display: flex;
     gap: 1.5rem;
+    margin-left: 2rem;
 }
 
     .nav-links a {
@@ -149,6 +120,127 @@ p {
             color: var(--primary-color);
         }
 
+/* Authentication Components */
+.auth-buttons {
+    display: flex;
+    gap: 0.75rem;
+    margin-left: auto;
+}
+
+/* Button Styles */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1.25rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+    border: 1px solid transparent;
+    box-shadow: var(--card-shadow);
+    text-align: center;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: var(--white);
+}
+
+    .btn-primary:hover {
+        background-color: var(--secondary-color);
+        transform: translateY(-2px);
+    }
+
+.btn-success {
+    background-color: var(--success-color);
+    color: var(--white);
+}
+
+    .btn-success:hover {
+        background-color: #3aac59;
+        transform: translateY(-2px);
+    }
+
+.btn-danger {
+    background-color: var(--danger-color);
+    color: var(--white);
+}
+
+    .btn-danger:hover {
+        background-color: #d3166b;
+        transform: translateY(-2px);
+    }
+
+.btn-outline {
+    background-color: transparent;
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+    .btn-outline:hover {
+        background-color: var(--primary-color);
+        color: var(--white);
+    }
+
+.btn-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+/* Authentication Forms */
+.auth-container {
+    max-width: 400px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background: var(--white);
+    border-radius: 0.5rem;
+    box-shadow: var(--card-shadow);
+}
+
+    .auth-container h2 {
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    transition: var(--transition);
+}
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    }
+
+/* Error Handling */
+.error-message {
+    color: var(--danger-color);
+    background-color: #f8d7da;
+    padding: 0.75rem;
+    border-radius: 0.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid #f5c6cb;
+    display: none;
+}
+
+/* Badges */
 .badge-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -182,6 +274,7 @@ p {
         color: var(--dark-color);
     }
 
+/* Modal */
 .modal {
     display: none;
     position: fixed;
@@ -203,18 +296,6 @@ p {
     width: 90%;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     animation: modalFadeIn 0.3s;
-}
-
-@keyframes modalFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
 
 .modal-header {
@@ -246,29 +327,10 @@ p {
     gap: 1rem;
 }
 
-.form-group {
-    margin-bottom: 1rem;
+/* Utility Classes */
+.text-center {
+    text-align: center;
 }
-
-.form-label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-}
-
-.form-control {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 0.5rem;
-    transition: var(--transition);
-}
-
-    .form-control:focus {
-        outline: none;
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
-    }
 
 .co2-badge {
     background-color: var(--accent-color);
@@ -288,6 +350,19 @@ p {
     margin: 20px auto;
 }
 
+/* Animations */
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 @keyframes spin {
     0% {
         transform: rotate(0deg);
@@ -298,25 +373,28 @@ p {
     }
 }
 
-.btn-group {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1.5rem;
-}
-
-.text-center {
-    text-align: center;
-}
-
+/* Responsive Design */
 @media (max-width: 768px) {
     .navbar-container {
         flex-direction: column;
         gap: 1rem;
+        padding: 1rem;
     }
 
     .nav-links {
         width: 100%;
-        justify-content: space-around;
+        justify-content: center;
+        margin-left: 0;
+        margin-top: 1rem;
+    }
+
+    .auth-buttons {
+        margin: 1rem auto 0;
+    }
+
+    .auth-container {
+        margin: 2rem 1rem;
+        padding: 1.5rem;
     }
 
     .badge-container {
@@ -326,44 +404,4 @@ p {
     .btn-group {
         flex-direction: column;
     }
-}
-.auth-container {
-    max-width: 400px;
-    margin: 50px auto;
-    padding: 20px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-    .auth-container h2 {
-        text-align: center;
-        margin-bottom: 20px;
-    }
-
-    .auth-container input {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 15px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-    }
-
-    .auth-container button {
-        width: 100%;
-        padding: 10px;
-        background-color: #4361ee;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-
-        .auth-container button:hover {
-            background-color: #3a0ca3;
-        }
-
-.error {
-    color: red;
-    margin-bottom: 15px;
 }
