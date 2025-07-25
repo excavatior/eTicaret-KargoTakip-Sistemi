@@ -1,137 +1,137 @@
+// Oturum durumunu kontrol et
 document.addEventListener('DOMContentLoaded', function () {
-    // Form event listener'ları
-    const loginForm = document.getElementById('loginForm');
-    const registerForm = document.getElementById('registerForm');
+    checkAuthState();
+    setupFormHandlers();
+});
+
+// Form event listener'larını kur
+function setupFormHandlers() {
+    const loginForm = document.querySelector('.sign-in-form');
+    const registerForm = document.querySelector('.sign-up-form');
 
     if (loginForm) {
-        loginForm.addEventListener('submit', handleFormSubmit(login));
+        loginForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            handleLogin();
+        });
     }
 
     if (registerForm) {
-        registerForm.addEventListener('submit', handleFormSubmit(register));
-    }
-
-    // Oturum durumunu kontrol et
-    updateAuthState();
-});
-
-// Form submit handler factory
-function handleFormSubmit(handler) {
-    return async function (e) {
-        e.preventDefault();
-        const form = e.target;
-        const submitButton = form.querySelector('button[type="submit"]');
-
-        try {
-            submitButton.disabled = true;
-            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> İşleniyor...';
-            await handler();
-        } catch (error) {
-            console.error('İşlem hatası:', error);
-        } finally {
-            submitButton.disabled = false;
-            submitButton.innerHTML = form.id === 'loginForm'
-                ? '<i class="fas fa-sign-in-alt"></i> Giriş Yap'
-                : '<i class="fas fa-user-plus"></i> Kayıt Ol';
-        }
-    };
-}
-
-// Kullanıcı kayıt fonksiyonu (Gelişmiş versiyon)
-async function register() {
-    const user = {
-        AdSoyad: document.getElementById('name').value.trim(),
-        EPosta: document.getElementById('email').value.trim().toLowerCase(),
-        Sifre: document.getElementById('password').value
-    };
-
-    // Client-side validation
-    if (!user.AdSoyad || !user.EPosta || !user.Sifre) {
-        throw new Error('Tüm alanlar zorunludur!');
-    }
-
-    if (user.Sifre.length < 6) {
-        throw new Error('Şifre en az 6 karakter olmalıdır');
-    }
-
-    try {
-        const response = await fetch('/api/auth/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(user)
+        registerForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            handleRegister();
         });
-
-        const data = await parseResponse(response);
-
-        // Başarılı kayıt sonrası
-        showSuccess('Kayıt başarılı! Giriş yapabilirsiniz.');
-        setTimeout(() => window.location.href = '/login.html', 1500);
-
-        return data;
-    } catch (error) {
-        showError(error.message);
-        throw error;
     }
 }
 
-// Kullanıcı giriş fonksiyonu (Gelişmiş versiyon)
-async function login() {
-    const credentials = {
-        EPosta: document.getElementById('email').value.trim().toLowerCase(),
-        Sifre: document.getElementById('password').value
-    };
+// Giriş işlemi
+async function handleLogin() {
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+    const errorElement = document.getElementById('login-error');
+    const submitBtn = document.querySelector('.sign-in-form .btn');
+
+    // Validasyon
+    if (!email || !password) {
+        showError(errorElement, 'Lütfen tüm alanları doldurunuz');
+        return;
+    }
 
     try {
+        // Butonu disable et
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Giriş Yapılıyor...';
+
         const response = await fetch('/api/auth/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             },
-            credentials: 'include', // Cookie-based auth için
-            body: JSON.stringify(credentials)
+            body: JSON.stringify({
+                EPosta: email,
+                Sifre: password
+            })
         });
 
         const data = await parseResponse(response);
 
-        // Token'i sakla ve yönlendir
-        if (data.token) {
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('user', JSON.stringify(data.user));
-        }
+        // Başarılı giriş
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
 
         showSuccess('Giriş başarılı! Yönlendiriliyorsunuz...');
-        updateAuthState();
         setTimeout(() => window.location.href = '/', 1000);
 
-        return data;
     } catch (error) {
-        showError(error.message);
-        throw error;
-    }
-}
-
-// Çıkış yap fonksiyonu (Gelişmiş versiyon)
-async function logout() {
-    try {
-        // Sunucu tarafında logout işlemi için istek gönder
-        await fetch('/api/auth/logout', {
-            method: 'POST',
-            credentials: 'include'
-        });
+        showError(errorElement, error.message || 'Geçersiz e-posta veya şifre');
     } finally {
-        // Client-side temizlik
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        updateAuthState();
-        window.location.href = '/login.html';
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Giriş Yap';
+        }
     }
 }
 
-// API yanıtlarını parse etme
+// Kayıt işlemi
+async function handleRegister() {
+    const name = document.getElementById('register-name').value.trim();
+    const email = document.getElementById('register-email').value.trim();
+    const password = document.getElementById('register-password').value;
+    const errorElement = document.getElementById('register-error');
+    const submitBtn = document.querySelector('.sign-up-form .btn');
+
+    // Validasyon
+    if (!name || !email || !password) {
+        showError(errorElement, 'Lütfen tüm alanları doldurunuz');
+        return;
+    }
+
+    if (password.length < 6) {
+        showError(errorElement, 'Şifre en az 6 karakter olmalıdır');
+        return;
+    }
+
+    try {
+        // Butonu disable et
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Kayıt Olunuyor...';
+
+        const response = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                AdSoyad: name,
+                EPosta: email,
+                Sifre: password
+            })
+        });
+
+        const data = await parseResponse(response);
+
+        showSuccess('Kayıt başarılı! Giriş sayfasına yönlendiriliyorsunuz...');
+
+        // Kayıt sonrası giriş formuna geç
+        setTimeout(() => {
+            document.querySelector('.container').classList.remove('sign-up-mode');
+            document.getElementById('login-email').value = email;
+            document.getElementById('login-password').value = '';
+        }, 1500);
+
+    } catch (error) {
+        showError(errorElement, error.message || 'Kayıt işlemi başarısız oldu');
+    } finally {
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Kayıt Ol';
+        }
+    }
+}
+
+// API yanıtlarını parse et
 async function parseResponse(response) {
     const contentType = response.headers.get('content-type');
     let data;
@@ -145,85 +145,60 @@ async function parseResponse(response) {
     if (!response.ok) {
         const error = new Error(data.message || 'İşlem başarısız');
         error.response = response;
-        error.data = data;
         throw error;
     }
 
     return data;
 }
 
-// Oturum durumuna göre arayüzü güncelle (Gelişmiş versiyon)
-function updateAuthState() {
-    const token = localStorage.getItem('token');
-    const user = JSON.parse(localStorage.getItem('user'));
-    const authButtons = document.getElementById('authButtons');
-    const userMenu = document.getElementById('userMenu');
+// Hata mesajını göster
+function showError(element, message) {
+    if (!element) return;
 
-    if (authButtons) {
-        if (token) {
-            authButtons.innerHTML = `
-                <div class="dropdown">
-                    <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-user-circle"></i> ${user?.AdSoyad || 'Profil'}
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/profile.html"><i class="fas fa-user"></i> Profilim</a></li>
-                        <li><a class="dropdown-item" href="/orders.html"><i class="fas fa-box"></i> Siparişlerim</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><button class="dropdown-item" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</button></li>
-                    </ul>
-                </div>
-            `;
-        } else {
-            authButtons.innerHTML = `
-                <a href="/login.html" class="btn btn-login me-2"><i class="fas fa-sign-in-alt"></i> Giriş Yap</a>
-                <a href="/register.html" class="btn btn-outline"><i class="fas fa-user-plus"></i> Kayıt Ol</a>
-            `;
-        }
-    }
+    element.textContent = message;
+    element.style.display = 'block';
 
-    // Kullanıcı menüsü varsa güncelle
-    if (userMenu) {
-        userMenu.style.display = token ? 'block' : 'none';
-    }
+    setTimeout(() => {
+        element.style.display = 'none';
+    }, 5000);
 }
 
-// Başarı mesajlarını göster
+// Başarı mesajını göster
 function showSuccess(message) {
-    const successElement = document.getElementById('success-message') || createMessageElement('success');
-    successElement.textContent = message;
-    successElement.style.display = 'block';
+    // Toastify veya benzeri bir kütüphane ekleyebilirsiniz
+    const successDiv = document.createElement('div');
+    successDiv.className = 'success-message';
+    successDiv.innerHTML = `
+        <i class="fas fa-check-circle"></i>
+        <span>${message}</span>
+    `;
+
+    document.body.appendChild(successDiv);
 
     setTimeout(() => {
-        successElement.style.display = 'none';
-    }, 5000);
+        successDiv.classList.add('fade-out');
+        setTimeout(() => successDiv.remove(), 500);
+    }, 3000);
 }
 
-// Hata mesajlarını göster
-function showError(message) {
-    const errorElement = document.getElementById('error-message') || createMessageElement('error');
-    errorElement.textContent = message;
-    errorElement.style.display = 'block';
-
-    setTimeout(() => {
-        errorElement.style.display = 'none';
-    }, 5000);
+// Oturum durumunu kontrol et
+function checkAuthState() {
+    const token = localStorage.getItem('token');
+    if (token && !isTokenExpired(token)) {
+        window.location.href = '/';
+    }
 }
 
-// Mesaj elementi oluştur (yoksa)
-function createMessageElement(type) {
-    const element = document.createElement('div');
-    element.id = `${type}-message`;
-    element.className = `alert alert-${type} fixed-top mx-auto mt-3`;
-    element.style.display = 'none';
-    element.style.maxWidth = '500px';
-    element.style.zIndex = '1100';
-    document.body.appendChild(element);
-    return element;
+// Token süresi kontrolü
+function isTokenExpired(token) {
+    try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        return payload.exp < Date.now() / 1000;
+    } catch {
+        return true;
+    }
 }
 
-// Global erişim için fonksiyonları window'a ekle
-window.register = register;
-window.login = login;
-window.logout = logout;
-window.updateAuthState = updateAuthState;
+// Global fonksiyonlar
+window.handleLogin = handleLogin;
+window.handleRegister = handleRegister;

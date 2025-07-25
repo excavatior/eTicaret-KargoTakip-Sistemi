@@ -1,23 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
-    <meta charset="UTF-8"> <!-- Bu satırı ekleyin -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <title>Kayıt Ol</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <meta charset="UTF-8" />
+    <title>Yönlendiriliyorsunuz…</title>
+    <!-- Meta refresh -->
+    <meta http-equiv="refresh" content="0; url=login.html#signup" />
+    <script>
+        // JS ile hemen yönlendir
+        window.location.replace('login.html#signup');
+    </script>
 </head>
 <body>
-    <div class="auth-container">
-        <h2>Kayıt Ol</h2>
-        <div id="error-message" class="error"></div>
-        <form onsubmit="event.preventDefault(); register();">
-            <input type="text" id="name" placeholder="Ad Soyad" required>
-            <input type="email" id="email" placeholder="E-posta" required>
-            <input type="password" id="password" placeholder="Şifre" required>
-            <button type="submit">Kayıt Ol</button>
-        </form>
-        <p>Zaten hesabınız var mı? <a href="/login.html">Giriş yapın</a></p>
-    </div>
-    <script src="/js/auth.js"></script>
+    Eğer otomatik yönlendirme çalışmadıysa,
+    <a href="login.html#signup">buraya tıklayın</a>.
 </body>
 </html>

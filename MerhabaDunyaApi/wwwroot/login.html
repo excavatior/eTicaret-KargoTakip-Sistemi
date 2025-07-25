@@ -1,22 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
-    <meta charset="UTF-8"> <!-- Bu satırı ekleyin -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <title>Giriş Yap</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Giriş / Kayıt</title>
+    <link rel="stylesheet" href="css/style.css" />
 </head>
-<body>
-    <div class="auth-container">
-        <h2>Giriş Yap</h2>
-        <div id="error-message" class="error"></div>
-        <form onsubmit="event.preventDefault(); login();">
-            <input type="email" id="email" placeholder="E-posta" required>
-            <input type="password" id="password" placeholder="Şifre" required>
-            <button type="submit">Giriş Yap</button>
-        </form>
-        <p>Hesabınız yok mu? <a href="/register.html">Kayıt olun</a></p>
+<body class="auth-page">
+    <div class="auth-wrapper" id="container">
+        <!-- Kayıt Paneli -->
+        <div class="sign-up-container form-panel">
+            <form id="registerForm">
+                <h2>Kayıt Ol</h2>
+                <input type="text" placeholder="Ad Soyad" required />
+                <input type="email" placeholder="E‑posta" required />
+                <input type="password" placeholder="Şifre" required />
+                <button type="submit" class="btn">Kayıt Ol</button>
+            </form>
+        </div>
+        <!-- Giriş Paneli -->
+        <div class="sign-in-container form-panel">
+            <form id="loginForm">
+                <h2>Giriş Yap</h2>
+                <input type="email" placeholder="E‑posta" required />
+                <input type="password" placeholder="Şifre" required />
+                <button type="submit" class="btn">Giriş Yap</button>
+            </form>
+        </div>
+        <!-- Overlay -->
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h2>Hoşgeldiniz!</h2>
+                    <p>Zaten hesabınız var mı?</p>
+                    <button class="btn ghost" id="signIn">Giriş Yap</button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h2>Merhaba!</h2>
+                    <p>Hesabınız yok mu?</p>
+                    <button class="btn ghost" id="signUp">Kayıt Ol</button>
+                </div>
+            </div>
+        </div>
     </div>
-    <script src="/js/auth.js"></script>
+
+    <script>
+        const signupBtn = document.getElementById('signUp');
+        const signinBtn = document.getElementById('signIn');
+        const container = document.getElementById('container');
+
+        signupBtn.addEventListener('click', () => {
+            container.classList.add('right-panel-active');
+            history.replaceState(null, '', '#signup');
+        });
+        signinBtn.addEventListener('click', () => {
+            container.classList.remove('right-panel-active');
+            history.replaceState(null, '', '#signin');
+        });
+
+        window.addEventListener('load', () => {
+            if (location.hash === '#signup') {
+                container.classList.add('right-panel-active');
+            }
+        });
+    </script>
 </body>
 </html>

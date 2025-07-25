@@ -156,12 +156,8 @@ C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.
 C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\rjsmcshtml.dswa.cache.json
 C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\scopedcss\bundle\MerhabaDunyaApi.styles.css
 C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\compressed\u9xnav3m18-b8n1rrztme.gz
-C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\compressed\3t5f88l1ps-m3ghybdq3t.gz
 C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\compressed\srmtho5y49-4y8n0b29ye.gz
-C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\compressed\ww0sw2fx9l-p5b550fblf.gz
-C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\compressed\pc4c041abv-1xjhju42kk.gz
 C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\compressed\eqiibbqplt-omtd4vhrgr.gz
-C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\compressed\vz7xqrqwzp-rn5z2ilo5r.gz
 C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\staticwebassets.build.json
 C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\staticwebassets.build.json.cache
 C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\staticwebassets.development.json
@@ -172,3 +168,9 @@ C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.
 C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\MerhabaDunyaApi.pdb
 C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\MerhabaDunyaApi.genruntimeconfig.cache
 C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\ref\MerhabaDunyaApi.dll
+C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\compressed\xj91foirqf-mwoo1w7a27.gz
+C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\compressed\u8r7koxict-mwoo1w7a27.gz
+C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\compressed\ww0sw2fx9l-w7ynohps7t.gz
+C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\compressed\pc4c041abv-rg1n5xg2uz.gz
+C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\compressed\3t5f88l1ps-w1mkl4hr1d.gz
+C:\Users\Halil Turan\eTicaret-KargoTakip-Sistemi\MerhabaDunyaApi\obj\Debug\net9.0\compressed\vz7xqrqwzp-q0orl95tik.gz
