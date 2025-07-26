@@ -897,7 +897,7 @@ p {
     }
 
     .auth-page .auth-wrapper .overlay {
-        background: linear-gradient(45deg, #2c3e50, #606fff);
+        background: linear-gradient(45deg, #3e7cee, #3e7cee);
         color: var(--white);
         position: relative;
         left: -100%;
@@ -930,7 +930,8 @@ p {
 
     .auth-page .auth-wrapper .overlay-left {
         left: 0;
-        transform: translateX(-20%);
+        transform: translateX(0);
+        
     }
 
     .auth-page .auth-wrapper .overlay-right {
@@ -974,3 +975,10 @@ p {
         .auth-page .auth-wrapper .btn:hover {
             background: var(--secondary-color);
         }
+
+    .auth-page .auth-wrapper .overlay-left p {
+        color: #fff;
+    }
+    .auth-page .auth-wrapper .overlay-right p {
+        color: #fff;
+    }
