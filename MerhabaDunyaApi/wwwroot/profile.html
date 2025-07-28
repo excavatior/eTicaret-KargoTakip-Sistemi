@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Profilim</title>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+    <div class="auth-container">
+        <h1>Profil Bilgileriniz</h1>
+        <p><strong>Ad Soyad:</strong> <span id="prName"></span></p>
+        <p><strong>E‑posta:</strong> <span id="prEmail"></span></p>
+        <button id="prLogout" class="btn btn-danger">Çıkış Yap</button>
+    </div>
+
+    <script>
+        // LocalStorage'dan gelen JSON, camelCase anahtarlar içerir
+        const raw = localStorage.getItem('user');
+        let user = {};
+        try {
+            user = raw ? JSON.parse(raw) : {};
+        } catch (e) {
+            console.error('Profil için user parse hatası:', e);
+        }
+
+        // Artık camelCase: kimlik
+        if (!user.kimlik) {
+            // Kayıtlı kullanıcı yoksa login sayfasına yönlendir
+            window.location.href = 'login.html';
+        } else {
+            // camelCase anahtarlarla verileri ata
+            document.getElementById('prName').textContent = user.adSoyad || '';
+            document.getElementById('prEmail').textContent = user.ePosta || '';
+        }
+
+        // Güvenli çıkış için logout endpoint'i de çağırıp storage'ı temizle
+        document.getElementById('prLogout').addEventListener('click', () => {
+            fetch('https://localhost:5001/api/auth/logout', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+            }).finally(() => {
+                localStorage.clear();
+                window.location.href = 'login.html';
+            });
+        });
+    </script>
+</body>
+</html>

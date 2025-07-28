@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ayarlar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+    <body class="settings-page">
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="navbar-container">
+                <a href="index.html" class="logo">
+                    <i class="fas fa-leaf"></i> EcoShip
+                </a>
+                <div class="nav-links">
+                    <a href="index.html"><i class="fas fa-home"></i> Anasayfa</a>
+                    <a href="order.html"><i class="fas fa-truck"></i> Siparişler</a>
+                    <a href="badges.html"><i class="fas fa-medal"></i> Rozetlerim</a>
+                </div>
+                <div class="auth-buttons" id="authButtons"></div>
+            </div>
+        </nav>
+
+        <!-- Settings Content -->
+        <div class="container">
+            <div class="card">
+                <h1><i class="fas fa-cog"></i> Ayarlar</h1>
+                <form id="settingsForm">
+                    <div class="form-group">
+                        <label for="name">Ad Soyad</label>
+                        <input type="text" id="name" name="name" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="email">E-posta</label>
+                        <input type="email" id="email" name="email" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Yeni Şifre</label>
+                        <input type="password" id="password" name="password" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Şifre Tekrar</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </form>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const authContainer = document.getElementById('authButtons');
+                const userData = localStorage.getItem('user');
+                const token = localStorage.getItem('token');
+
+                // Navbar için auth kontrolü
+                if (userData && token) {
+                    const user = JSON.parse(userData);
+                    authContainer.innerHTML = `
+                      <div class="profile-dropdown" style="position:relative; display:inline-block;">
+                        <button id="profileBtn" class="btn btn-outline dropdown-toggle">
+                          <i class="fas fa-user"></i> ${user.adSoyad || user.AdSoyad}
+                          <i class="fas fa-caret-down" style="margin-left:4px;"></i>
+                        </button>
+                        <div id="profileDropdown" class="dropdown-menu" style="display:none; position:absolute; top:calc(100% + 4px); right:0; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,0.15); border-radius:6px; min-width:160px; z-index:1000;">
+                          <a href="profile.html" style="display:block; padding:8px 12px; color:#333; text-decoration:none;"><i class="fas fa-user-circle"></i> Profilim</a>
+                          <a href="settings.html" style="display:block; padding:8px 12px; color:#333; text-decoration:none;"><i class="fas fa-cog"></i> Ayarlar</a>
+                          <a href="order.html" style="display:block; padding:8px 12px; color:#333; text-decoration:none;"><i class="fas fa-truck"></i> Siparişlerim</a>
+                          <hr style="margin:4px 0; border-color:#eee;">
+                          <button id="logoutBtn" style="width:100%; padding:8px 12px; border:none; background:#e74c3c; color:#fff; cursor:pointer; border-radius:0 0 6px 6px;"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</button>
+                        </div>
+                      </div>
+                    `;
+
+                    const btn = document.getElementById('profileBtn');
+                    const dropdown = document.getElementById('profileDropdown');
+                    btn.addEventListener('click', e => {
+                        e.stopPropagation();
+                        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+                    });
+                    document.addEventListener('click', () => dropdown.style.display = 'none');
+                    document.getElementById('logoutBtn').addEventListener('click', () => {
+                        fetch('https://localhost:5001/api/auth/logout', {
+                            method: 'POST',
+                            headers: { 'Authorization': `Bearer ${token}` }
+                        }).finally(() => {
+                            localStorage.clear();
+                            window.location.href = 'login.html';
+                        });
+                    });
+                } else {
+                    authContainer.innerHTML = `
+                      <a href="login.html" class="btn btn-login"><i class="fas fa-sign-in-alt"></i> Giriş Yap</a>
+                      <a href="register.html" class="btn btn-outline"><i class="fas fa-user-plus"></i> Kayıt Ol</a>
+                    `;
+                    // Eğer kullanıcı yoksa login'e yönlendir
+                    window.location.href = 'login.html';
+                }
+
+                // Ayarlar formunu doldur
+                if (userData) {
+                    const user = JSON.parse(userData);
+                    document.getElementById('name').value = user.adSoyad || '';
+                    document.getElementById('email').value = user.ePosta || '';
+                }
+
+                // Form gönderimini engelle ve bildirim ver
+                document.getElementById('settingsForm').addEventListener('submit', e => {
+                    e.preventDefault();
+                    alert('Ayarlar kaydedildi! (Backend entegrasyonu bekleniyor)');
+                });
+            });
+        </script>
+    </body>
+</html>

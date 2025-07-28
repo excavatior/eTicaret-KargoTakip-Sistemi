@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using MerhabaDunyaApi.DTOs;
@@ -40,20 +39,25 @@ namespace MerhabaDunyaApi.Controllers
                     AdSoyad = dto.AdSoyad.Trim(),
                     EPosta = dto.EPosta.Trim().ToLower()
                 };
+
                 var created = await _auth.Register(user, dto.Sifre);
 
-                return CreatedAtAction(nameof(GetCurrentUser), null, new
-                {
-                    created.Kimlik,
-                    created.AdSoyad,
-                    created.EPosta,
-                    created.OlusturmaTarihi
-                });
+                return CreatedAtAction(
+                    nameof(GetCurrentUser),
+                    null,
+                    new
+                    {
+                        created.Kimlik,
+                        created.AdSoyad,
+                        created.EPosta,
+                        created.OlusturmaTarihi
+                    }
+                );
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Register error");
-                return StatusCode(500, new { Message = "Kayıt hatası." });
+                return StatusCode(500, new { Message = "Kayıt işlemi sırasında beklenmeyen hata." });
             }
         }
 
@@ -63,19 +67,43 @@ namespace MerhabaDunyaApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _auth.Login(dto.EPosta.Trim().ToLower(), dto.Sifre);
-            if (!result.Success)
-                return Unauthorized(new { result.Message });
-
-            return Ok(new
+            try
             {
-                result.Token,
-                result.ExpiresIn,
-                User = new { result.User.Kimlik, result.User.AdSoyad, result.User.EPosta }
-            });
+                var result = await _auth.Login(
+                    dto.EPosta.Trim().ToLower(),
+                    dto.Sifre
+                );
+
+                if (!result.Success)
+                {
+                    _logger.LogWarning("Başarısız giriş denemesi: {Email}", dto.EPosta);
+                    // 401 yerine 400 de tercih edilebilir, ama JSON olduğu sürece parse hatası almazsınız
+                    return BadRequest(new { success = false, message = result.Message });
+                }
+
+                return Ok(new
+                {
+                    success = true,
+                    token = result.Token,
+                    expiresIn = result.ExpiresIn,
+                    user = new
+                    {
+                        result.User.Kimlik,
+                        result.User.AdSoyad,
+                        result.User.EPosta
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                // Gerçek exception mesajını kullanıcıya dönüyoruz (dilerseniz sabit bir mesaj da yazabilirsiniz)
+                _logger.LogError(ex, "Login error");
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
         }
 
-        [Authorize, HttpPost("logout")]
+        [Authorize]
+        [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -83,12 +111,16 @@ namespace MerhabaDunyaApi.Controllers
             return Ok(new { Message = "Çıkış yapıldı." });
         }
 
-        [Authorize, HttpGet("me")]
+        [Authorize]
+        [HttpGet("me")]
         public async Task<IActionResult> GetCurrentUser()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = await _auth.GetUserById(userId);
-            if (user == null) return NotFound(new { Message = "Kullanıcı bulunamadı." });
+
+            if (user == null)
+                return NotFound(new { Message = "Kullanıcı bulunamadı." });
+
             return Ok(new
             {
                 user.Kimlik,

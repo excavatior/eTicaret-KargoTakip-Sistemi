@@ -39,6 +39,16 @@ builder.Services.AddHttpClient("routing", c =>
 {
     c.BaseAddress = new Uri("https://router.project-osrm.org/");
 });
+builder.Services.AddCors(options => {
+    options.AddPolicy("AllowWebApp",
+        builder => builder
+            .WithOrigins("https://yourdomain.com", "http://localhost:5247")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials());
+});
+
+
 
 // Emisyon Hesaplayıcı servisi (DI)
 builder.Services.AddScoped<IEmissionCalculator, EmissionCalculator>();
@@ -57,7 +67,7 @@ if (app.Environment.IsDevelopment())
 
 
 // Auth servisini ekleyin
-
+app.UseCors("AllowAll");
 
 // Statik dosya servisi (wwwroot) ve default dosya bulunması:
 app.UseDefaultFiles();   // ← burada index.html, default.html vs. aranır
@@ -66,6 +76,7 @@ app.UseDefaultFiles();   // ← burada index.html, default.html vs. aranır
 // app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.MapFallbackToFile("/login.html");
 // Controller rotalarını eşliyoruz
 app.MapControllers();
 app.UseAuthentication();

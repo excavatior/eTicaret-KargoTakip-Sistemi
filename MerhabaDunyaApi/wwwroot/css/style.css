@@ -1,4 +1,4 @@
-:root {
+﻿:root {
     /* Color Variables */
     --primary-color: #4361ee;
     --secondary-color: #3f37c9;
@@ -258,7 +258,7 @@ p {
             box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
         }
 
-/* PANEL ST�LLER� */
+/* PANEL STİLLERİ */
 .panels-container {
     position: absolute;
     width: 100%;
@@ -304,7 +304,7 @@ p {
     transition: transform 0.5s 0.3s;
 }
 
-/* MOB�L UYUMLULUK */
+/* MOBİL UYUMLULUK */
 @media (max-width: 870px) {
     .auth-container {
         height: auto;
@@ -767,7 +767,7 @@ p {
             box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
         }
 
-/* PANEL ST�LLER� (non-slider) */
+/* PANEL STİLLERİ (non-slider) */
 .panels-container {
     position: absolute;
     width: 100%;
@@ -840,7 +840,7 @@ p {
 }
 
 /* Errors, badges, modals, utility classes, etc. (unchanged) */
-/* � sizin di�er global stilleriniz burada devam ediyor � */
+/* … sizin diğer global stilleriniz burada devam ediyor … */
 
 /* ===== SLIDER-CSS FOR AUTH-PAGE ===== */
 .auth-page .auth-wrapper {
@@ -982,3 +982,161 @@ p {
     .auth-page .auth-wrapper .overlay-right p {
         color: #fff;
     }
+
+/* Profil dropdown */
+.profile-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+    .profile-dropdown .dropdown-toggle {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .profile-dropdown .dropdown-icon {
+        font-size: 0.8em;
+        margin-left: 4px;
+    }
+
+    .profile-dropdown .dropdown-menu {
+        display: none;
+        position: absolute;
+        top: calc(100% + 4px);
+        right: 0;
+        background: #fff;
+        min-width: 180px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        border-radius: 6px;
+        overflow: hidden;
+        z-index: 1000;
+    }
+
+        .profile-dropdown .dropdown-menu.show {
+            display: block;
+        }
+
+        .profile-dropdown .dropdown-menu a {
+            display: block;
+            padding: 10px 16px;
+            color: #333;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+            .profile-dropdown .dropdown-menu a:hover {
+                background: #f5f5f5;
+            }
+
+/* Opsiyonel: auth-buttons içindeki elemanlar arası boşluk */
+.auth-buttons > * {
+    margin-left: 0.5rem;
+}
+/* Navbar’ın dropdown’ı kesmemesi için */
+.navbar,
+.navbar-container {
+    overflow: visible !important;
+}
+
+/* Dropdown’ın hep en üstte görünmesi için */
+.profile-dropdown .dropdown-menu {
+    z-index: 9999;
+}
+
+/* ─── Settings Page (sadece settings.html için) ─────────────────────────────────────────────────── */
+.settings-page .container {
+    max-width: 480px;
+    margin: 2.5rem auto;
+    padding: 0 1rem;
+}
+
+.settings-page .card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    padding: 2rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+    .settings-page .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    .settings-page .card h1 {
+        margin-bottom: 1.5rem;
+        font-size: 1.8rem;
+        color: #333;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+.settings-page .form-group {
+    margin-bottom: 1.25rem;
+}
+
+    .settings-page .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #555;
+    }
+
+.settings-page .form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+    .settings-page .form-control:focus {
+        border-color: #6c63ff;
+        box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.15);
+        outline: none;
+    }
+
+.settings-page .btn-primary {
+    display: inline-block;
+    background-color: #6c63ff;
+    color: #fff;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+    .settings-page .btn-primary:hover {
+        background-color: #5848c2;
+        transform: translateY(-2px);
+    }
+
+.settings-page .btn-danger {
+    background-color: #e74c3c !important;
+    color: #fff !important;
+    border-radius: 6px !important;
+    padding: 0.65rem 1.25rem !important;
+    transition: background-color 0.2s;
+}
+
+    .settings-page .btn-danger:hover {
+        background-color: #c0392b !important;
+    }
+
+@media (max-width: 576px) {
+    .settings-page .card {
+        padding: 1.5rem;
+    }
+
+    .settings-page .btn-primary,
+    .settings-page .btn-danger {
+        width: 100%;
+        text-align: center;
+    }
+}
+

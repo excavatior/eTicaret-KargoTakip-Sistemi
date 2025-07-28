@@ -7,27 +7,32 @@
     <link rel="stylesheet" href="css/style.css" />
 </head>
 <body class="auth-page">
+
     <div class="auth-wrapper" id="container">
-        <!-- Kayıt Paneli -->
-        <div class="sign-up-container form-panel">
-            <form id="registerForm">
+        <!-- ==== Kayıt Paneli ==== -->
+        <div class="form-panel sign-up-container">
+            <form id="registerForm" class="sign-up-form">
                 <h2>Kayıt Ol</h2>
-                <input type="text" placeholder="Ad Soyad" required />
-                <input type="email" placeholder="E‑posta" required />
-                <input type="password" placeholder="Şifre" required />
+                <input id="registerName" type="text" placeholder="Ad Soyad" required />
+                <input id="registerEmail" type="email" placeholder="E‑posta" required />
+                <input id="registerPassword" type="password" placeholder="Şifre" required />
+                <div id="registerError" class="error-message"></div>
                 <button type="submit" class="btn">Kayıt Ol</button>
             </form>
         </div>
-        <!-- Giriş Paneli -->
-        <div class="sign-in-container form-panel">
-            <form id="loginForm">
+
+        <!-- ==== Giriş Paneli ==== -->
+        <div class="form-panel sign-in-container">
+            <form id="loginForm" class="sign-in-form">
                 <h2>Giriş Yap</h2>
-                <input type="email" placeholder="E‑posta" required />
-                <input type="password" placeholder="Şifre" required />
+                <input id="loginEmail" type="email" placeholder="E‑posta" required />
+                <input id="loginPassword" type="password" placeholder="Şifre" required />
+                <div id="loginError" class="error-message"></div>
                 <button type="submit" class="btn">Giriş Yap</button>
             </form>
         </div>
-        <!-- Overlay -->
+
+        <!-- ==== Overlay ve Ghost Butonlar ==== -->
         <div class="overlay-container">
             <div class="overlay">
                 <div class="overlay-panel overlay-left">
@@ -45,23 +50,71 @@
     </div>
 
     <script>
-        const signupBtn = document.getElementById('signUp');
-        const signinBtn = document.getElementById('signIn');
-        const container = document.getElementById('container');
-
-        signupBtn.addEventListener('click', () => {
-            container.classList.add('right-panel-active');
-            history.replaceState(null, '', '#signup');
-        });
-        signinBtn.addEventListener('click', () => {
-            container.classList.remove('right-panel-active');
-            history.replaceState(null, '', '#signin');
-        });
-
-        window.addEventListener('load', () => {
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('container');
+            document.getElementById('signUp').addEventListener('click', () => {
+                container.classList.add('right-panel-active');
+            });
+            document.getElementById('signIn').addEventListener('click', () => {
+                container.classList.remove('right-panel-active');
+            });
+            // Eğer URL’de #signup varsa otomatik kayıta geç
             if (location.hash === '#signup') {
                 container.classList.add('right-panel-active');
             }
+
+            // … kayıt + giriş fetch kodu (önceki JS’in aynısı) …
+            const regErr = document.getElementById('registerError');
+            document.getElementById('registerForm').addEventListener('submit', async e => {
+                e.preventDefault();
+                regErr.style.display = 'none';
+                const payload = {
+                    AdSoyad: document.getElementById('registerName').value.trim(),
+                    EPosta: document.getElementById('registerEmail').value.trim().toLowerCase(),
+                    Sifre: document.getElementById('registerPassword').value
+                };
+                try {
+                    const res = await fetch('/api/auth/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const text = await res.text(), data = JSON.parse(text || '{}');
+                    if (!res.ok) throw new Error(data.message || text || 'Kayıt başarısız.');
+                    alert('Kayıt başarılı! Lütfen giriş yapın.');
+                    container.classList.remove('right-panel-active');
+                } catch (err) {
+                    regErr.textContent = err.message;
+                    regErr.style.display = 'block';
+                }
+            });
+
+            const logErr = document.getElementById('loginError');
+            document.getElementById('loginForm').addEventListener('submit', async e => {
+                e.preventDefault();
+                logErr.style.display = 'none';
+                const payload = {
+                    EPosta: document.getElementById('loginEmail').value.trim().toLowerCase(),
+                    Sifre: document.getElementById('loginPassword').value
+                };
+                try {
+                    const res = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const text = await res.text(), data = JSON.parse(text || '{}');
+                    if (!res.ok) throw new Error(data.message || text || 'Giriş başarısız.');
+                    localStorage.setItem('isLoggedIn', '1');
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    window.location.href = 'index.html';
+                    
+                } catch (err) {
+                    logErr.textContent = err.message;
+                    logErr.style.display = 'block';
+                }
+            });
         });
     </script>
 </body>

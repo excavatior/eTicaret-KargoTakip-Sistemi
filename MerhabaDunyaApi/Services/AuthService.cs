@@ -43,11 +43,14 @@ namespace MerhabaDunyaApi.Services
 
         public async Task<LoginResult> Login(string eposta, string sifre)
         {
+            // 1) Kullanıcıyı çek
             var user = await _context.Kullanicilar
                 .FirstOrDefaultAsync(u => u.EPosta == eposta && u.Aktif);
 
-            // VerifyPasswordHash, Base64 hash ve byte[] salt’la çalışıyor:
+            // 2) Bulunamadıysa veya şifre yanlışsa
             if (user == null
+                || string.IsNullOrEmpty(user.SifreHash)
+                || user.SifreSalt == null
                 || !VerifyPasswordHash(sifre, user.SifreHash, user.SifreSalt))
             {
                 return new LoginResult
@@ -57,17 +60,21 @@ namespace MerhabaDunyaApi.Services
                 };
             }
 
+            // 3) Giriş zamanını kaydet (DB migrasyonunuzda SonGirisTarihi sütunu olduğundan emin olun)
             user.SonGirisTarihi = DateTime.UtcNow;
             await _context.SaveChangesAsync();
+            var token = GenerateJwtToken(user);
 
+            // 4) Token oluştur ve geri dön
             return new LoginResult
             {
                 Success = true,
-                Token = GenerateJwtToken(user),
+                Token = token,
                 ExpiresIn = 3600,
                 User = user
             };
         }
+        
 
         public Task<bool> UserExists(string eposta)
             => _context.Kullanicilar.AnyAsync(u => u.EPosta == eposta);
@@ -109,19 +116,26 @@ namespace MerhabaDunyaApi.Services
 
         private string GenerateJwtToken(Kullanici user)
         {
-            var key = Encoding.UTF8.GetBytes(_config["Jwt:Key"]!);
-            var creds = new SigningCredentials(new SymmetricSecurityKey(key),
-                                                   SecurityAlgorithms.HmacSha512);
+            var keyBytes = Encoding.UTF8.GetBytes(_config["Jwt:Key"]);
+            var securityKey = new SymmetricSecurityKey(keyBytes);
+            // Burada HS512 veya HS256 seçebilirsiniz
+            var creds = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512);
+
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Kimlik.ToString()),
-                new Claim(ClaimTypes.Email, user.EPosta),
-                new Claim(ClaimTypes.Name, user.AdSoyad)
-            };
+        new Claim(JwtRegisteredClaimNames.Sub, user.Kimlik.ToString()),
+        new Claim(JwtRegisteredClaimNames.UniqueName, user.AdSoyad),
+        // diğer claim’ler…
+    };
+
             var token = new JwtSecurityToken(
+                issuer: _config["Jwt:Issuer"],
+                audience: _config["Jwt:Audience"],
                 claims: claims,
                 expires: DateTime.UtcNow.AddHours(1),
-                signingCredentials: creds);
+                signingCredentials: creds
+            );
+
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
