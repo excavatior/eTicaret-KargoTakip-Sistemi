@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Yeni Ürün Ekle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+</head>
+<body class="product-page">
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo"><i class="fas fa-leaf"></i> EcoShip</a>
+            <div class="nav-links">
+                <a href="index.html"><i class="fas fa-home"></i> Anasayfa</a>
+                <a href="add-product.html"><i class="fas fa-plus-circle"></i> Ürün Ekle</a>
+                <a href="products.html"><i class="fas fa-search"></i> Ürünleri Ara</a>
+                <a href="order.html"><i class="fas fa-truck"></i> Siparişler</a>
+            </div>
+            <div class="auth-buttons" id="authButtons"></div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <h1><i class="fas fa-plus-circle"></i> Yeni Ürün Ekle</h1>
+            <form id="addProductForm" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="title">Ürün Adı</label>
+                    <input type="text" id="title" name="title" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label for="description">Açıklama</label>
+                    <textarea id="description" name="description" class="form-control" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="category">Kategori</label>
+                    <select id="category" name="category" class="form-control" required>
+                        <option value="electronics">Elektronik</option>
+                        <option value="clothing">Giyim</option>
+                        <option value="home">Ev & Yaşam</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Satıcı</label>
+                    <input type="text" id="sellerName" class="form-control" disabled />
+                    <input type="hidden" id="sellerId" name="sellerId" />
+                </div>
+                <div class="form-group">
+                    <label for="price">Fiyat (₺)</label>
+                    <input type="number" id="price" name="price" class="form-control" step="0.01" required />
+                </div>
+                <div class="form-group">
+                    <label for="weight">Ağırlık (kg)</label>
+                    <input type="number" id="weight" name="weight" class="form-control" step="0.01" required />
+                </div>
+                <div class="form-group">
+                    <label for="image">Ürün Fotoğrafı</label>
+                    <input type="file" id="image" name="image" accept="image/*" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label>Karbon Ayak İzi (kg CO₂e):</label>
+                    <div id="carbonResult">0.00</div>
+                </div>
+                <button type="submit" class="btn btn-primary">Ürünü Yayınla</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Auth Kontrolü
+            const authContainer = document.getElementById('authButtons');
+            const userData = JSON.parse(localStorage.getItem('user') || '{}');
+            const token = localStorage.getItem('token');
+            if (userData && token && userData.kimlik) {
+                authContainer.innerHTML = `
+            <a href="profile.html" class="btn btn-outline"><i class="fas fa-user"></i> ${userData.adSoyad}</a>
+            <button id="logoutBtn" class="btn btn-danger"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</button>
+          `;
+                document.getElementById('logoutBtn').onclick = () => {
+                    fetch('/api/auth/logout', { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } })
+                        .finally(() => { localStorage.clear(); location.href = 'login.html'; });
+                };
+            } else {
+                authContainer.innerHTML = `
+            <a href="login.html" class="btn btn-login"><i class="fas fa-sign-in-alt"></i> Giriş Yap</a>
+            <a href="register.html" class="btn btn-outline"><i class="fas fa-user-plus"></i> Kayıt Ol</a>
+          `;
+            }
+
+            // Satıcı bilgisi dolduruluyor
+            if (userData.kimlik) {
+                document.getElementById('sellerName').value = userData.adSoyad;
+                document.getElementById('sellerId').value = userData.kimlik;
+            }
+
+            // Karbon Hesaplama
+            const weightInput = document.getElementById('weight');
+            const carbonResult = document.getElementById('carbonResult');
+            weightInput.addEventListener('input', () => {
+                const kg = parseFloat(weightInput.value) || 0;
+                carbonResult.textContent = (kg * 0.5).toFixed(2);
+            });
+
+            // Ürün Ekleme
+            document.getElementById('addProductForm').addEventListener('submit', async e => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                try {
+                    const resp = await fetch('/api/products', {
+                        method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: formData
+                    });
+                    if (!resp.ok) throw resp;
+                    Toastify({ text: 'Ürün başarıyla eklendi!', duration: 3000, gravity: 'top', position: 'right' }).showToast();
+                    e.target.reset(); carbonResult.textContent = '0.00';
+                } catch (err) {
+                    Toastify({ text: 'Ürün eklenirken hata oluştu.', duration: 3000, gravity: 'top', position: 'right', backgroundColor: 'linear-gradient(to right, #e74c3c, #c0392b)' }).showToast();
+                }
+            });
+        });
+    </script>

@@ -3,22 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sipariş Detayı</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <title>
+        Sipariş Detayları</n>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+        <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="orders-page">
     <nav class="navbar">
         <div class="navbar-container">
-            <a href="index.html" class="logo">
-                <i class="fas fa-leaf"></i> EcoShip
-            </a>
+            <a href="index.html" class="logo"><i class="fas fa-leaf"></i> EcoShip</a>
             <div class="nav-links">
                 <a href="index.html"><i class="fas fa-home"></i> Anasayfa</a>
+                <a href="products.html"><i class="fas fa-box"></i> Ürünler</a>
                 <a href="order.html"><i class="fas fa-truck"></i> Siparişler</a>
                 <a href="badges.html"><i class="fas fa-medal"></i> Rozetlerim</a>
             </div>
+            <div class="auth-buttons" id="authButtons"></div>
         </div>
     </nav>
 
@@ -28,133 +29,107 @@
             <div class="form-group">
                 <p>Karbon Ayak İzi: <span id="co2-value" class="co2-badge">Yükleniyor...</span> kg CO₂</p>
             </div>
-            <div id="loading" class="spinner" style="display: none;"></div>
+            <div id="loading" class="spinner" style="display:none;"></div>
             <div class="btn-group">
-                <button id="offset-btn" class="btn btn-success">
-                    <i class="fas fa-tree"></i> Karbonu Dengele
-                </button>
-                <a href="index.html" class="btn">
-                    <i class="fas fa-arrow-left"></i> Ana Sayfaya Dön
-                </a>
+                <button id="offset-btn" class="btn btn-success"><i class="fas fa-tree"></i> Karbonu Dengele</button>
+                <a href="index.html" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Ana Sayfaya Dön</a>
             </div>
         </div>
     </div>
 
+    <!-- Karbon Offset Modal -->
     <div id="offset-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title"><i class="fas fa-seedling"></i> Karbon Offset</h3>
-                <button id="offset-close" class="close-btn">&times;</button>
+                <button class="close-btn">&times;</button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label for="offset-count" class="form-label">Ağaç Adeti:</label>
-                    <input type="number" id="offset-count" class="form-control" value="1" min="1" />
+                    <label for="offset-count">Ağaç Adeti:</label>
+                    <input type="number" id="offset-count" class="form-control" value="1" min="1">
                 </div>
                 <p id="offset-cost" class="text-center">Maliyet: 140 TL</p>
             </div>
             <div class="modal-footer">
-                <button id="offset-purchase" class="btn btn-success">
-                    <i class="fas fa-shopping-cart"></i> Satın Al
-                </button>
-                <button id="offset-close" class="btn btn-danger">
-                    <i class="fas fa-times"></i> Kapat
-                </button>
+                <button id="offset-purchase" class="btn btn-success"><i class="fas fa-shopping-cart"></i> Satın Al</button>
+                <button class="btn btn-danger close-btn"><i class="fas fa-times"></i> Kapat</button>
             </div>
         </div>
     </div>
 
     <script>
-        // CO2 değerini göster
-        async function showCO2(orderId) {
-            const loadingElement = document.getElementById('loading');
-            const co2Element = document.getElementById('co2-value');
-
-            try {
-                loadingElement.style.display = 'block';
-                co2Element.textContent = 'Hesaplanıyor...';
-
-                // Simüle edilmiş bekleme
-                await new Promise(resolve => setTimeout(resolve, 1500));
-
-                const emisyon = 12.75; // Simüle edilmiş değer
-                co2Element.textContent = emisyon.toFixed(2);
-
-            } catch (error) {
-                co2Element.textContent = 'Hata';
-                console.error('CO2 verisi alınamadı:', error);
-
-            } finally {
-                loadingElement.style.display = 'none';
+        document.addEventListener('DOMContentLoaded', () => {
+            // Auth Kontrolü
+            const authContainer = document.getElementById('authButtons');
+            const userData = localStorage.getItem('user');
+            const token = localStorage.getItem('token');
+            if (userData && token) {
+                const user = JSON.parse(userData);
+                authContainer.innerHTML = `
+            <div class="profile-dropdown" style="position:relative; display:inline-block;">
+              <button id="profileBtn" class="btn btn-outline dropdown-toggle">
+                <i class="fas fa-user"></i> ${user.adSoyad}
+                <i class="fas fa-caret-down" style="margin-left:4px;"></i>
+              </button>
+              <div id="profileDropdown" class="dropdown-menu" style="display:none; position:absolute; top:calc(100% + 4px); right:0; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,0.15); border-radius:6px; min-width:160px; z-index:1000;">
+                <a href="profile.html" style="display:block; padding:8px 12px; color:#333; text-decoration:none;"><i class="fas fa-user-circle"></i> Profilim</a>
+                <a href="settings.html" style="display:block; padding:8px 12px; color:#333; text-decoration:none;"><i class="fas fa-cog"></i> Ayarlar</a>
+                <a href="order.html" style="display:block; padding:8px 12px; color:#333; text-decoration:none;"><i class="fas fa-truck"></i> Siparişlerim</a>
+                <hr style="margin:4px 0; border-color:#eee;">
+                <button id="logoutBtn" class="btn btn-danger" style="width:100%; padding:8px 12px; border:none; border-radius:0 0 6px 6px;"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</button>
+              </div>
+            </div>`;
+                const btn = document.getElementById('profileBtn');
+                const dropdown = document.getElementById('profileDropdown');
+                btn.addEventListener('click', e => { e.stopPropagation(); dropdown.classList.toggle('show'); });
+                document.addEventListener('click', () => dropdown.classList.remove('show'));
+                document.getElementById('logoutBtn').addEventListener('click', () => {
+                    fetch('https://localhost:5001/api/auth/logout', { method: 'POST', headers: { Authorization: `Bearer ${token}` } })
+                        .finally(() => { localStorage.clear(); window.location.href = 'login.html'; });
+                });
+            } else {
+                authContainer.innerHTML = `
+            <a href="login.html" class="btn btn-login"><i class="fas fa-sign-in-alt"></i> Giriş Yap</a>
+            <a href="register.html" class="btn btn-outline"><i class="fas fa-user-plus"></i> Kayıt Ol</a>
+          `;
             }
-        }
-        showCO2(1);
 
-        // Modal interactions and local cost calculation
-        const costPerTree = 140; // TL per tree
-        const offsetBtn = document.getElementById('offset-btn');
-        const offsetModal = document.getElementById('offset-modal');
-        const offsetCount = document.getElementById('offset-count');
-        const offsetCost = document.getElementById('offset-cost');
-        const purchaseBtn = document.getElementById('offset-purchase');
-        const closeBtns = document.querySelectorAll('#offset-close, .close-btn');
+            // CO2 Hesaplama
+            async function showCO2() {
+                const loading = document.getElementById('loading');
+                const co2El = document.getElementById('co2-value');
+                loading.style.display = 'block'; co2El.textContent = 'Hesaplanıyor...';
+                await new Promise(r => setTimeout(r, 1500));
+                co2El.textContent = (12.75).toFixed(2);
+                loading.style.display = 'none';
+            }
+            showCO2();
 
-        offsetBtn.addEventListener('click', () => {
-            offsetModal.style.display = 'flex';
-            updateCost();
-        });
+            // Offset Modal Logic
+            const cost = 140;
+            const offsetBtn = document.getElementById('offset-btn');
+            const modal = document.getElementById('offset-modal');
+            const countInp = document.getElementById('offset-count');
+            const costEl = document.getElementById('offset-cost');
+            const closeBtns = document.querySelectorAll('.close-btn');
+            const purchaseBtn = document.getElementById('offset-purchase');
+            function updateCost() { costEl.textContent = `Maliyet: ${countInp.value * cost} TL`; }
+            offsetBtn.addEventListener('click', () => { modal.style.display = 'flex'; updateCost(); });
+            countInp.addEventListener('input', updateCost);
+            closeBtns.forEach(b => b.addEventListener('click', () => modal.style.display = 'none'));
+            purchaseBtn.addEventListener('click', () => window.open('https://www.tema.org.tr/fidan-bagisi-secenekleri', '_blank'));
+            window.addEventListener('click', e => { if (e.target === modal) modal.style.display = 'none'; });
 
-        offsetCount.addEventListener('input', () => {
-            updateCost();
-        });
-
-        closeBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                offsetModal.style.display = 'none';
+            // SignalR & Toastify
+            const connection = new signalR.HubConnectionBuilder().withUrl("/notificationHub").build();
+            connection.on("ReceiveNotification", data => {
+                Toastify({ text: `${data.title}\n${data.message}`, duration: 5000, gravity: "top", position: "right", backgroundColor: "linear-gradient(to right,#4361ee,#3a0ca3)" }).showToast();
             });
-        });
-
-        purchaseBtn.addEventListener('click', () => {
-            // Redirect to TEMA donation page
-            window.open('https://www.tema.org.tr/fidan-bagisi-secenekleri', '_blank');
-        });
-
-        function updateCost() {
-            const adet = parseInt(offsetCount.value) || 0;
-            const totalCost = adet * costPerTree;
-            offsetCost.textContent = `Maliyet: ${totalCost} TL`;
-        }
-
-        // Modal dışına tıklanınca kapat
-        window.addEventListener('click', (e) => {
-            if (e.target === offsetModal) {
-                offsetModal.style.display = 'none';
-            }
+            connection.start().catch(err => console.error(err));
         });
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-    <script>
-        const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/notificationHub")
-            .build();
-
-        connection.on("ReceiveNotification", data => {
-            Toastify({
-                text: `${data.title}\n${data.message}`,
-                duration: 5000,
-                gravity: "top",
-                position: "right",
-                backgroundColor: "linear-gradient(to right, #4361ee, #3a0ca3)",
-                stopOnFocus: true
-            }).showToast();
-        });
-
-        connection.start().then(() => {
-            connection.invoke("Subscribe", 1);
-        }).catch(err => {
-            console.error('SignalR bağlantı hatası:', err);
-        });
-    </script>
 </body>
 </html>

@@ -15,11 +15,13 @@
             </a>
             <div class="nav-links">
                 <a href="index.html"><i class="fas fa-home"></i> Anasayfa</a>
+                <a href="add-product.html"><i class="fas fa-plus-circle"></i> Ürün Ekle</a>
+                <a href="products.html"><i class="fas fa-search"></i> Ürünleri Ara</a>
                 <a href="order.html"><i class="fas fa-truck"></i> Siparişler</a>
                 <a href="badges.html"><i class="fas fa-medal"></i> Rozetlerim</a>
             </div>
             <div class="auth-buttons" id="authButtons">
-                <!-- Giriş yapmış kullanıcı yoksa burası JS ile güncellenecek -->
+                <!-- JS ile doldurulacak -->
                 <a href="login.html" class="btn btn-login"><i class="fas fa-sign-in-alt"></i> Giriş Yap</a>
                 <a href="register.html" class="btn btn-outline"><i class="fas fa-user-plus"></i> Kayıt Ol</a>
             </div>
@@ -31,8 +33,9 @@
             <h1><i class="fas fa-shipping-fast"></i> Merhaba, EcoShip'e Hoş Geldiniz!</h1>
             <p>Sürdürülebilir lojistik çözümleriyle çevre dostu kargo deneyimi.</p>
             <div class="btn-group">
-                <a href="order.html" class="btn"><i class="fas fa-search"></i> Sipariş Detayı</a>
-                <a href="badges.html" class="btn"><i class="fas fa-award"></i> Rozetlerim</a>
+                <a href="add-product.html" class="btn"><i class="fas fa-plus-circle"></i> Ürün Ekle</a>
+                <a href="products.html" class="btn"><i class="fas fa-search"></i> Ürünleri Ara</a>
+                <a href="order.html" class="btn"><i class="fas fa-truck"></i> Siparişlerimi Gör</a>
             </div>
         </div>
     </div>
@@ -45,22 +48,21 @@
 
             if (userData && token) {
                 const user = JSON.parse(userData);
-
                 authContainer.innerHTML = `
-              <div class="profile-dropdown" style="position:relative; display:inline-block;">
-                <button id="profileBtn" class="btn btn-outline dropdown-toggle">
-                  <i class="fas fa-user"></i> ${user.adSoyad || user.AdSoyad}
-                  <i class="fas fa-caret-down" style="margin-left:4px;"></i>
-                </button>
-                <div id="profileDropdown" class="dropdown-menu" style="display:none; position:absolute; top:calc(100% + 4px); right:0; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,0.15); border-radius:6px; min-width:160px; z-index:1000;">
-                  <a href="profile.html" style="display:block; padding:8px 12px; color:#333; text-decoration:none;"><i class="fas fa-user-circle"></i> Profilim</a>
-                  <a href="settings.html" style="display:block; padding:8px 12px; color:#333; text-decoration:none;"><i class="fas fa-cog"></i> Ayarlar</a>
-                  <a href="order.html" style="display:block; padding:8px 12px; color:#333; text-decoration:none;"><i class="fas fa-truck"></i> Siparişlerim</a>
-                  <hr style="margin:4px 0; border-color:#eee;">
-                  <button id="logoutBtn" style="width:100%; padding:8px 12px; border:none; background:#e74c3c; color:#fff; cursor:pointer; border-radius:0 0 6px 6px;"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</button>
-                </div>
-              </div>
-            `;
+                  <div class="profile-dropdown" style="position:relative; display:inline-block;">
+                    <button id="profileBtn" class="btn btn-outline dropdown-toggle">
+                      <i class="fas fa-user"></i> ${user.adSoyad || user.AdSoyad}
+                      <i class="fas fa-caret-down" style="margin-left:4px;"></i>
+                    </button>
+                    <div id="profileDropdown" class="dropdown-menu" style="display:none; position:absolute; top:calc(100% + 4px); right:0; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,0.15); border-radius:6px; min-width:160px; z-index:1000;">
+                      <a href="profile.html" style="display:block; padding:8px 12px; color:#333; text-decoration:none;"><i class="fas fa-user-circle"></i> Profilim</a>
+                      <a href="settings.html" style="display:block; padding:8px 12px; color:#333; text-decoration:none;"><i class="fas fa-cog"></i> Ayarlar</a>
+                      <a href="order.html" style="display:block; padding:8px 12px; color:#333; text-decoration:none;"><i class="fas fa-truck"></i> Siparişlerim</a>
+                      <hr style="margin:4px 0; border-color:#eee;">
+                      <button id="logoutBtn" style="width:100%; padding:8px 12px; border:none; background:#e74c3c; color:#fff; cursor:pointer; border-radius:0 0 6px 6px;"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</button>
+                    </div>
+                  </div>
+                `;
 
                 const btn = document.getElementById('profileBtn');
                 const dropdown = document.getElementById('profileDropdown');
@@ -87,9 +89,9 @@
             } else {
                 // Giriş yapılmamışsa Login/Register butonlarını göster
                 authContainer.innerHTML = `
-              <a href="login.html" class="btn btn-login"><i class="fas fa-sign-in-alt"></i> Giriş Yap</a>
-              <a href="register.html" class="btn btn-outline"><i class="fas fa-user-plus"></i> Kayıt Ol</a>
-            `;
+                  <a href="login.html" class="btn btn-login"><i class="fas fa-sign-in-alt"></i> Giriş Yap</a>
+                  <a href="register.html" class="btn btn-outline"><i class="fas fa-user-plus"></i> Kayıt Ol</a>
+                `;
             }
         });
     </script>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ürünler</title>
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="catalog-page">
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-leaf"></i> EcoShip
+            </a>
+            <div class="nav-links">
+                <a href="index.html"><i class="fas fa-home"></i> Anasayfa</a>
+                <a href="add-product.html"><i class="fas fa-plus-circle"></i> Ürün Ekle</a>
+                <a href="products.html"><i class="fas fa-search"></i> Ürünleri Ara</a>
+                <a href="order.html"><i class="fas fa-truck"></i> Siparişler</a>
+                <a href="badges.html"><i class="fas fa-medal"></i> Rozetlerim</a>
+            </div>
+            <div class="auth-buttons" id="authButtons">
+                <!-- JS ile Giriş Yap / Profil menüsü buraya eklenecek -->
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="search-bar">
+            <input type="search" id="productSearch" placeholder="Ürün ara..." class="form-control" />
+        </div>
+        <div id="productList" class="grid">
+            <!-- JS ile ürün kartları render edilecek -->
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const products = []; // TODO: API'den çek
+            const listEl = document.getElementById('productList');
+            const render = items => {
+                listEl.innerHTML = items.map(p => `
+            <div class="card product-card">
+              <img src="${p.imageUrl}" alt="${p.title}" />
+              <h3>${p.title}</h3>
+              <p>${p.price} ₺</p>
+              <small>${(p.weight * 0.5).toFixed(2)} kg CO₂e</small>
+              <a href="product-detail.html?id=${p.id}" class="btn">Detay</a>
+            </div>
+          `).join('');
+            };
+            render(products);
+            document.getElementById('productSearch').addEventListener('input', e => {
+                render(products.filter(p =>
+                    p.title.toLowerCase().includes(e.target.value.toLowerCase())
+                ));
+            });
+        });
+    </script>
+</body>
+</html>
