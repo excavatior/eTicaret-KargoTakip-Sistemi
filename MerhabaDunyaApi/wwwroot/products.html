@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ürünler</title>
+    <title>Ürünleri Ara</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="css/style.css" />
 </head>
 <body class="catalog-page">
     <nav class="navbar">
         <div class="navbar-container">
-            <a href="index.html" class="logo">
-                <i class="fas fa-leaf"></i> EcoShip
-            </a>
+            <a href="index.html" class="logo"><i class="fas fa-leaf"></i> EcoShip</a>
             <div class="nav-links">
                 <a href="index.html"><i class="fas fa-home"></i> Anasayfa</a>
                 <a href="add-product.html"><i class="fas fa-plus-circle"></i> Ürün Ekle</a>
@@ -19,39 +18,54 @@
                 <a href="order.html"><i class="fas fa-truck"></i> Siparişler</a>
                 <a href="badges.html"><i class="fas fa-medal"></i> Rozetlerim</a>
             </div>
-            <div class="auth-buttons" id="authButtons">
-                <!-- JS ile Giriş Yap / Profil menüsü buraya eklenecek -->
-            </div>
+            <div id="authButtons" class="auth-buttons"></div>
         </div>
     </nav>
+
     <div class="container">
         <div class="search-bar">
-            <input type="search" id="productSearch" placeholder="Ürün ara..." class="form-control" />
+            <input id="productSearch" placeholder="Ürün ara..." class="form-control" />
         </div>
-        <div id="productList" class="grid">
-            <!-- JS ile ürün kartları render edilecek -->
-        </div>
+        <div id="productList" class="grid"></div>
     </div>
+
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const products = []; // TODO: API'den çek
+        document.addEventListener('DOMContentLoaded', async () => {
+            const auth = document.getElementById('authButtons');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const token = localStorage.getItem('token');
+            if (user.kimlik && token) {
+                auth.innerHTML = `<button id="logoutBtn" class="btn btn-danger"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</button>`;
+                document.getElementById('logoutBtn').onclick = () => { localStorage.clear(); location.href = 'login.html'; };
+            } else {
+                auth.innerHTML = `<a href="login.html" class="btn btn-login"><i class="fas fa-sign-in-alt"></i> Giriş Yap</a>`;
+            }
+
+            let products = [];
+            try {
+                const res = await fetch('/api/products', { headers: { 'Authorization': `Bearer ${token}` } });
+                if (!res.ok) throw res.status;
+                products = await res.json();
+            } catch {
+                document.getElementById('productList').innerHTML = '<p>Ürünler yüklenemedi.</p>';
+                return;
+            }
+
             const listEl = document.getElementById('productList');
-            const render = items => {
-                listEl.innerHTML = items.map(p => `
-            <div class="card product-card">
+            const render = arr => listEl.innerHTML = arr.map(p => `
+            <div class="card product-card" data-id="${p.id}">
               <img src="${p.imageUrl}" alt="${p.title}" />
               <h3>${p.title}</h3>
-              <p>${p.price} ₺</p>
-              <small>${(p.weight * 0.5).toFixed(2)} kg CO₂e</small>
-              <a href="product-detail.html?id=${p.id}" class="btn">Detay</a>
+              <p>${p.price.toFixed(2)} ₺</p>
+              <small>${p.carbon.toFixed(2)} kg CO₂e</small>
             </div>
           `).join('');
-            };
+
             render(products);
-            document.getElementById('productSearch').addEventListener('input', e => {
-                render(products.filter(p =>
-                    p.title.toLowerCase().includes(e.target.value.toLowerCase())
-                ));
+            document.getElementById('productSearch').addEventListener('input', e => render(products.filter(p => p.title.toLowerCase().includes(e.target.value.toLowerCase()))));
+            listEl.addEventListener('click', e => {
+                const c = e.target.closest('.product-card');
+                if (c) location.href = `product-detail.html?id=${c.dataset.id}`;
             });
         });
     </script>

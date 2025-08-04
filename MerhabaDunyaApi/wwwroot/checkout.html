@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ödeme</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body class="checkout-page">
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo"><i class="fas fa-leaf"></i> EcoShip</a>
+            <div class="nav-links">
+                <a href="index.html"><i class="fas fa-home"></i> Anasayfa</a>
+                <a href="products.html"><i class="fas fa-search"></i> Ürünleri Ara</a>
+                <a href="order.html"><i class="fas fa-truck"></i> Siparişler</a>
+            </div>
+            <div id="authButtons" class="auth-buttons"></div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="card">
+            <h1><i class="fas fa-credit-card"></i> Ödeme</h1>
+            <form id="payment-form">
+                <div class="form-group">
+                    <label for="card-element">Kredi/Banka Kartı</label>
+                    <div id="card-element" class="form-control"></div>
+                </div>
+                <button id="pay-button" class="btn btn-primary">Kartla Öde</button>
+            </form>
+            <hr />
+            <button id="cod-button" class="btn btn-outline">Kapıda Ödeme</button>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const stripe = Stripe('pk_test_YOUR_PUBLIC_KEY');
+            const elements = stripe.elements();
+            const cardEl = elements.create('card'); cardEl.mount('#card-element');
+            const user = JSON.parse(localStorage.getItem('user') || '{}'); const token = localStorage.getItem('token');
+            if (!user.kimlik || !token) return location.href = 'login.html';
+            const auth = document.getElementById('authButtons'); auth.innerHTML = `<a href="profile.html" class="btn btn-outline"><i class="fas fa-user"></i> ${user.adSoyad}</a><button id="logoutBtn" class="btn btn-danger"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</button>`; document.getElementById('logoutBtn').onclick = () => { localStorage.clear(); location.href = 'login.html'; };
+            const id = new URLSearchParams(window.location.search).get('id');
+            document.getElementById('payment-form').addEventListener('submit', async e => { e.preventDefault(); const { clientSecret } = await fetch('/api/payments/create-intent', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ productId: id }) }).then(r => r.json()); const { error } = await stripe.confirmCardPayment(clientSecret, { payment_method: { card: cardEl } }); if (error) Toastify({ text: error.message, duration: 3000, gravity: 'top', position: 'right', backgroundColor: 'linear-gradient(to right,#e74c3c,#c0392b)' }).showToast(); else { Toastify({ text: 'Ödeme başarılı!', duration: 3000, gravity: 'top', position: 'right' }).showToast(); setTimeout(() => location.href = 'order.html', 1500); } });
+            document.getElementById('cod-button').addEventListener('click', async () => { const r = await fetch('/api/orders', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ productId: id, paymentMethod: 'COD', quantity: 1 }) }); if (r.ok) { Toastify({ text: 'Kapıda ödeme alındı', duration: 3000, gravity: 'top', position: 'right' }).showToast(); setTimeout(() => location.href = 'order.html', 1500); } else { const e = await r.text(); Toastify({ text: 'Hata: ' + e, duration: 4000, gravity: 'top', position: 'right', backgroundColor: 'linear-gradient(to right,#e74c3c,#c0392b)' }).showToast(); } });
+        });
+    </script>
+</body>
+</html>

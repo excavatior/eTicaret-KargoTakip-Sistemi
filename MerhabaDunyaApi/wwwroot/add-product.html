@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
 </head>
 <body class="product-page">
-    <!-- Navbar -->
     <nav class="navbar">
         <div class="navbar-container">
             <a href="index.html" class="logo"><i class="fas fa-leaf"></i> EcoShip</a>
@@ -19,7 +18,7 @@
                 <a href="products.html"><i class="fas fa-search"></i> Ürünleri Ara</a>
                 <a href="order.html"><i class="fas fa-truck"></i> Siparişler</a>
             </div>
-            <div class="auth-buttons" id="authButtons"></div>
+            <div id="authButtons" class="auth-buttons"></div>
         </div>
     </nav>
 
@@ -72,33 +71,22 @@
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Auth Kontrolü
-            const authContainer = document.getElementById('authButtons');
-            const userData = JSON.parse(localStorage.getItem('user') || '{}');
+            const auth = document.getElementById('authButtons');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
             const token = localStorage.getItem('token');
-            if (userData && token && userData.kimlik) {
-                authContainer.innerHTML = `
-            <a href="profile.html" class="btn btn-outline"><i class="fas fa-user"></i> ${userData.adSoyad}</a>
+            if (!user.kimlik || !token) return location.href = 'login.html';
+
+            auth.innerHTML = `
+            <a href="profile.html" class="btn btn-outline"><i class="fas fa-user"></i> ${user.adSoyad}</a>
             <button id="logoutBtn" class="btn btn-danger"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</button>
           `;
-                document.getElementById('logoutBtn').onclick = () => {
-                    fetch('/api/auth/logout', { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } })
-                        .finally(() => { localStorage.clear(); location.href = 'login.html'; });
-                };
-            } else {
-                authContainer.innerHTML = `
-            <a href="login.html" class="btn btn-login"><i class="fas fa-sign-in-alt"></i> Giriş Yap</a>
-            <a href="register.html" class="btn btn-outline"><i class="fas fa-user-plus"></i> Kayıt Ol</a>
-          `;
-            }
+            document.getElementById('logoutBtn').onclick = () => {
+                localStorage.clear(); location.href = 'login.html';
+            };
 
-            // Satıcı bilgisi dolduruluyor
-            if (userData.kimlik) {
-                document.getElementById('sellerName').value = userData.adSoyad;
-                document.getElementById('sellerId').value = userData.kimlik;
-            }
+            document.getElementById('sellerName').value = user.adSoyad;
+            document.getElementById('sellerId').value = user.kimlik;
 
-            // Karbon Hesaplama
             const weightInput = document.getElementById('weight');
             const carbonResult = document.getElementById('carbonResult');
             weightInput.addEventListener('input', () => {
@@ -106,20 +94,26 @@
                 carbonResult.textContent = (kg * 0.5).toFixed(2);
             });
 
-            // Ürün Ekleme
             document.getElementById('addProductForm').addEventListener('submit', async e => {
                 e.preventDefault();
-                const formData = new FormData(e.target);
+                const fd = new FormData(e.target);
+                fd.set('sellerId', user.kimlik);
+                fd.set('sellerName', user.adSoyad);
+
                 try {
-                    const resp = await fetch('/api/products', {
-                        method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: formData
+                    const res = await fetch('/api/products', {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${token}` },
+                        body: fd
                     });
-                    if (!resp.ok) throw resp;
+                    if (!res.ok) throw new Error(await res.text());
                     Toastify({ text: 'Ürün başarıyla eklendi!', duration: 3000, gravity: 'top', position: 'right' }).showToast();
                     e.target.reset(); carbonResult.textContent = '0.00';
                 } catch (err) {
-                    Toastify({ text: 'Ürün eklenirken hata oluştu.', duration: 3000, gravity: 'top', position: 'right', backgroundColor: 'linear-gradient(to right, #e74c3c, #c0392b)' }).showToast();
+                    Toastify({ text: 'Hata: ' + err.message, duration: 4000, gravity: 'top', position: 'right', backgroundColor: 'linear-gradient(to right,#e74c3c,#c0392b)' }).showToast();
                 }
             });
         });
     </script>
+</body>
+</html>

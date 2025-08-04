@@ -14,6 +14,7 @@ namespace MerhabaDunyaApi.Data
         public DbSet<Rozet> Rozetler { get; set; }
         public DbSet<KullaniciRozetleri> KullaniciRozetleri { get; set; }
         public DbSet<EmissionFactor> EmissionFactors { get; set; }
+        public DbSet<Product> Products { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

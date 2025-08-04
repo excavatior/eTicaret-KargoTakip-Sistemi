@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ürün Detayı</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+</head>
+<body class="product-detail-page">
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-leaf"></i> EcoShip
+            </a>
+            <div class="nav-links">
+                <a href="index.html"><i class="fas fa-home"></i> Anasayfa</a>
+                <a href="add-product.html"><i class="fas fa-plus-circle"></i> Ürün Ekle</a>
+                <a href="products.html"><i class="fas fa-search"></i> Ürünleri Ara</a>
+                <a href="order.html"><i class="fas fa-truck"></i> Siparişler</a>
+                <a href="badges.html"><i class="fas fa-medal"></i> Rozetlerim</a>
+            </div>
+            <div id="authButtons" class="auth-buttons">
+                <!-- JS ile Giriş/Profil butonları buraya eklenecek -->
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="detailCard" class="card">
+            <!-- Ürün detayları JS ile yüklenecek -->
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Auth Kontrolü
+            const auth = document.getElementById('authButtons');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const token = localStorage.getItem('token');
+            if (user.kimlik && token) {
+                auth.innerHTML = `
+              <a href="profile.html" class="btn btn-outline">
+                <i class="fas fa-user"></i> ${user.adSoyad}
+              </a>
+              <button id="logoutBtn" class="btn btn-danger">
+                <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+              </button>
+            `;
+                document.getElementById('logoutBtn').onclick = () => {
+                    localStorage.clear();
+                    location.href = 'login.html';
+                };
+            } else {
+                auth.innerHTML = `
+              <a href="login.html" class="btn btn-login">
+                <i class="fas fa-sign-in-alt"></i> Giriş Yap
+              </a>
+            `;
+            }
+
+            // Ürün ID'sini al
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            let product;
+
+            try {
+                const res = await fetch(`/api/products/${id}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!res.ok) throw new Error('Ürün yüklenemedi');
+                product = await res.json();
+            } catch (err) {
+                document.getElementById('detailCard').innerHTML = `<p>${err.message}</p>`;
+                return;
+            }
+
+            // Stok rozetini belirle
+            const stockBadge = product.stock < 10
+                ? `<span class="badge badge-warning">Tükeniyor</span>`
+                : '';
+
+            // Ürün detayı HTML
+            document.getElementById('detailCard').innerHTML = `
+            <h2>${product.title}</h2>
+            <img src="${product.imageUrl}" alt="${product.title}" />
+            <div class="details">
+              <p><strong>Satıcı:</strong> ${product.sellerName}</p>
+              <p><strong>Fiyat:</strong> ${product.price.toFixed(2)} ₺</p>
+              <p><strong>Ağırlık:</strong> ${product.weight.toFixed(2)} kg</p>
+              <p><strong>Karbon Ayak İzi:</strong> ${product.carbon.toFixed(2)} kg CO₂e</p>
+              <p><strong>Stok:</strong> ${product.stock} adet ${stockBadge}</p>
+              <p><strong>Açıklama:</strong><br/>${product.description}</p>
+            </div>
+            <div class="btn-group">
+              <button id="cardBuyBtn" class="btn btn-primary">
+                <i class="fas fa-credit-card"></i> Kartla Öde
+              </button>
+              <button id="codBuyBtn" class="btn btn-outline">
+                <i class="fas fa-money-bill-alt"></i> Kapıda Ödeme
+              </button>
+            </div>
+          `;
+
+            // Buton olayları
+            document.getElementById('cardBuyBtn').onclick = () => {
+                location.href = `checkout.html?id=${product.id}`;
+            };
+            document.getElementById('codBuyBtn').onclick = async () => {
+                const resp = await fetch('/api/orders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ productId: product.id, paymentMethod: 'COD', quantity: 1 })
+                });
+                Toastify({
+                    text: resp.ok ? 'Kapıda ödeme alındı.' : 'Hata: ' + await resp.text(),
+                    duration: 3000,
+                    gravity: 'top',
+                    position: 'right'
+                }).showToast();
+            };
+        });
+    </script>
+</body>
+</html>
